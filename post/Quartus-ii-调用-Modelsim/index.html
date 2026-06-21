@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="ctaoist">
+<link rel="Shortcut icon" href="/theme/images/avatar.jpg">
+
+<title>
+  
+    Quartus ii 调用 Modelsim
+  
+</title>
+
+
+<link rel="preconnect" href="https://cdn.cf.ctaoist.com">
+<link rel="dns-prefetch" href="https://cdn.cf.ctaoist.com">
+
+<script src="https://cdn.cf.ctaoist.com/npm/jquery@3/dist/jquery.min.js"></script>
+
+<script src="https://cdn.cf.ctaoist.com/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/bootstrap@4/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+
+
+
+
+
+<script src="/theme/topbar.js"></script>
+<script src="/theme/search.js"></script>
+<link href="/theme/style.css" rel="stylesheet">
+
+<style>
+#search-results .post-tags a {
+  font-size: 0.85rem;
+  line-height: 0.85rem;
+}
+</style>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+  ga('create', 'UA-81134010-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+<script>
+$(function () {
+  
+  $('[data-toggle="tooltip"]').tooltip();
+
+  
+  $(window).scroll(() => {
+    if ($(this).scrollTop() > 50 && $("#sidebar-trigger").css("display") === "none") {
+      $("#back-to-top").fadeIn();
+    } else {
+      $("#back-to-top").fadeOut();
+    }
+  });
+  $("#back-to-top").click(() => {
+    $("body,html").animate({ scrollTop: 0 }, 800);
+    return false;
+  });
+
+  
+  const input = $("#search-input");
+  const btnClear = $("#search-cleaner");
+  const searchWrapper = $("#search-wrapper");
+  if (input.val() !== "") {
+    if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+  }
+  input.on("keyup", function (e) {
+    if (input.val() !== "") {
+      if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+    }
+  });
+  btnClear.on("click", function () {
+    input.val("");
+    input.focus(); searchWrapper.addClass("input-focus");
+    btnClear.removeClass("visible");
+  });
+
+  
+  const sidebarUtil = (function () {
+    const ATTR_DISPLAY = "sidebar-display";
+    let isExpanded = false;
+    const body = $("body");
+    return {
+      toggle() {
+        if (isExpanded === false) {
+          body.attr(ATTR_DISPLAY, "");
+        } else {
+          body.removeAttr(ATTR_DISPLAY);
+        }
+        isExpanded = !isExpanded;
+      }
+    };
+  }());
+  $("#sidebar-trigger").click(sidebarUtil.toggle);
+  $("#mask").click(sidebarUtil.toggle);
+});
+</script>
+
+</head>
+<body>
+  
+
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+  
+  <div class="profile-wrapper text-center">
+    
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+      <img src="/theme/images/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+    
+    <div class="site-title mt-3">
+      <a href="/">不见春山</a>
+    </div>
+    <div class="site-subtitle font-italic">骑马倚斜桥，满楼红袖招。</div>
+
+  </div>
+
+  <ul class="w-100">
+
+    
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Home</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/cates" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Categories</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/archives" class="nav-link">
+          <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+          <span>Archives</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/tags" class="nav-link">
+        <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Tags</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/single/About-Me" class="nav-link">
+        <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>About</span>
+      </a>
+    </li>
+
+  </ul> 
+  
+
+  
+
+<script type="text/javascript">
+  class ModeToggle {
+    static get MODE_KEY() { return "mode"; }
+    static get DARK_MODE() { return "dark"; }
+    static get LIGHT_MODE() { return "light"; }
+
+    constructor() {
+      if (this.hasMode) {
+        if (this.isDarkMode) {
+          if (!this.isSysDarkPrefer) {
+            this.setDark();
+          }
+        } else {
+          if (this.isSysDarkPrefer) {
+            this.setLight();
+          }
+        }
+      }
+
+      let self = this;
+
+       
+      this.sysDarkPrefers.addEventListener("change", () => {
+        if (self.hasMode) {
+          if (self.isDarkMode) {
+            if (!self.isSysDarkPrefer) {
+              self.setDark();
+            }
+
+          } else {
+            if (self.isSysDarkPrefer) {
+              self.setLight();
+            }
+          }
+
+          self.clearMode();
+        }
+
+        self.updateMermaid();
+      });
+
+    }  
+
+    get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); }
+
+    get isSysDarkPrefer() { return this.sysDarkPrefers.matches; }
+
+    get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; }
+
+    get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; }
+
+    get hasMode() { return this.mode != null; }
+
+    get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); }
+
+     
+    get modeStatus() {
+      if (this.isDarkMode
+        || (!this.hasMode && this.isSysDarkPrefer)) {
+        return ModeToggle.DARK_MODE;
+      } else {
+        return ModeToggle.LIGHT_MODE;
+      }
+    }
+
+    setDark() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+    }
+
+    setLight() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+    }
+
+    clearMode() {
+      $('html').removeAttr(ModeToggle.MODE_KEY);
+      sessionStorage.removeItem(ModeToggle.MODE_KEY);
+    }
+
+    updateMermaid() {
+      if (typeof mermaid !== "undefined") {
+        let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE ? "dark" : "default");
+        let config = { theme: expectedTheme };
+
+         
+        
+        
+        
+        
+        
+        
+        $(".mermaid").each(function() {
+          
+          let svgCode = "";
+          $(this).prev().children(1).children("ol").children("li").each(function () {
+            svgCode = svgCode + $(this).text() + "\n";
+          });
+          $(this).removeAttr("data-processed");
+          $(this).html(svgCode);
+        });
+        mermaid.initialize(config);
+        mermaid.init({noteMargin: 10}, ".mermaid");
+      }
+    }
+
+  }  
+
+  const toggle = new ModeToggle();
+
+  function flipMode() {
+    if (toggle.hasMode) {
+      if (toggle.isSysDarkPrefer) {
+        if (toggle.isLightMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setLight();
+        }
+
+      } else {
+        if (toggle.isDarkMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setDark();
+        }
+      }
+
+    } else {
+      if (toggle.isSysDarkPrefer) {
+        toggle.setLight();
+      } else {
+        toggle.setDark();
+      }
+    }
+
+    toggle.updateMermaid();
+
+  }  
+
+</script>
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center">
+      <a id="mode-toggle-wrapper" tabindex="0" onclick="flipMode()">
+        <i class="mode-toggle fas fa-adjust"></i>
+      </a>
+      <span class="icon-border"></span>
+      
+        
+          <a href="https://github.com/ctaoist" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        
+          <a href="https://twitter.com/a275761919" aria-label="twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+         
+       
+      <a href="/rss.xml" aria-label="rss"><i class="fas fa-rss"></i></a>
+
+  </div> 
+</div>
+
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+      
+          <span><a href="/">Home</a></span>
+          
+            <span>Quartus ii 调用 Modelsim</span>
+          
+    </span>
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      
+        Quartus ii 调用 Modelsim
+      
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <form id="search-wrapper" class="align-items-center" onsubmit="search(event);return false;">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search" value=""
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </form>
+    <span id="search-cancel" >取消</span>
+  </div>
+</div> 
+
+<script src="//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+
+
+
+<div id="main-wrapper">
+  <div id="main">
+<div class="row">
+  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+      <div class="post pb-5 pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4 mb-md-4">
+      
+        <h1 id="post-title" data-toc-skip> Quartus ii 调用 Modelsim </h1>
+
+        <div class="post-meta text-muted d-flex flex-column">
+          
+          <div>
+            <span>由 </span><span class="semi-bold">ctaoist</span>
+            
+            <span class="timeago" data-toggle="tooltip" data-placement="bottom" title="2023-07-18 01:58:19">发布于 2023-07-18</span>
+            ·
+            <span class="timeago" data-toggle="tooltip" data-placement="bottom" title="2023-07-18 03:27:08">最后更新：2023-07-18</span>
+            
+            
+              <i class="far fa-eye fa-fw"></i>
+              
+                <span id="busuanzi_page_pv"></span>
+              
+            
+          </div>
+        </div>
+
+        <div class="post-content">
+
+          <div class="desc markdown-content" id="content">
+        	
+        		<div id="markdownContent" style="display: none">
+        			
+        			<textarea>## 配置 Modelsim
+
+1. 设置仿真工具
+
+`assignments -&gt; setting -&gt; EDA tool setting -&gt; simulation` 选择需要的工具。
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_set_modelsim0.png)
+
+2. 自动产生测试激励文件模板
+
+`processing -&gt; start -&gt; Start test bench template writer`:
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_gen_tb.png)
+
+文件夹 `simulation - modelsim` 中产生一个测试激励文件 `xxx.vt(Verilog test bench)` 或者 `xxx.vht(VHDL test bench)`
+
+3. 连接 test bench
+
+还是在 `simulation`(第一张图) 的设置页面里，设定 `NativeLink` 对话框中的设定。点击 `Test Benches`:
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_link_tb.png)
+
+- `Test bench name`: 前面生成的 `xxx.vt` 测试文件的文件名
+- `Tob level module in test bench`: `xxx.vt` 测试文件里面的顶层模块名，如 `debug_vlg_tst`
+- 还要添加对应的测试文件
+
+4. 设置 Modelsim 路径
+
+如果出现下图错误，说明 Modelsim 的路径没有进行设置。
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_modelsim_notfound.png)
+
+`quartus -&gt; tools -&gt; options -&gt; EDA tool options`，在右边选择 modelsim 的安装路径：
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_set_modelsim_path.png)
+
+5. 进行仿真
+
+![](https://blog.qiniu.ctaoist.cn/EDA/quartus_run_simulator.png)
+
+
+## 自己修改脚本
+
+修改了源文件需要每次重新打开 Modelsim，重新缩放波形，设置数据的显示格式等，非常不方便，可以自己修改脚本，避免重新设置。
+
+在 Modelsim 中的命令行界面中查看历史命令，找到执行脚本的命令 `do debug_run_msim_rtl_verilog.do` 或者类似的。
+
+在第一张图中勾选 `Use script to set up simulation`，选择相应的自定义脚本。添加只想看的信号，运行 1 ms:
+
+```custom.do
+add wave sim:/debug_vlg_tst/ADBUS0 sim:/debug_vlg_tst/ADBUS1 sim:/debug_vlg_tst/ADBUS3 
+view structure
+view signals
+run 1 ms
+```
+
+&gt;默认的脚本中，会添加所有信号，一直运行下去
+
+如果修改了源文件，不想重启 Modelsim，可以写个 `restart.do`，包括重新编译源文件，编译 `TestBench` 文件等，重新运行 1 ms。
+
+```restart.do
+vlog -vlog01compat -work work &#43;incdir&#43;D:/fpga/debug {D:/fpga/debug/decode.v}
+vlog -vlog01compat -work work &#43;incdir&#43;D:/fpga/debug {D:/fpga/debug/control.v}
+vlog -vlog01compat -work work &#43;incdir&#43;D:/fpga/debug {D:/fpga/debug/debug.v}
+
+vlog -vlog01compat -work work &#43;incdir&#43;D:/fpga/debug/simulation/modelsim {D:/fpga/debug/simulation/modelsim/debug_tb.vt}
+
+restart
+run 1 ms
+```
+
+重新运行的时候直接在 Modelsim 的命令行中直接执行命令：`do restart.do` 即可，这样**波形的缩放大小，数据显示格式等都会得到保留**。</textarea>
+        		</div> 
+        		<div style="padding: 20px; text-align: center">
+        			<img src="/theme/images/loading-32.gif" />
+        		</div>
+        	
+          </div> 
+        </div> 
+
+        <div class="post-tail-wrapper text-muted">
+            
+            
+              <div class="post-meta mb-3">
+                <i class="far fa-folder-open fa-fw mr-1"></i>
+                
+                  <a href="/cate/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80">编程语言</a>
+                
+                  <a href="/cate/Verilog">Verilog</a>
+                
+              </div>
+            
+
+            
+            <div class="post-tags">
+               
+            </div> 
+
+            
+            <div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+              <div class="license-wrapper">
+                该博客文章由作者通过
+                  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>进行授权。
+              </div>
+              
+              
+<div class="share-wrapper">
+  
+  <span class="share-label text-muted mr-1">分享</span>
+  <span class="share-icons">
+  
+    <a href="http://service.weibo.com/share/share.php?title=Quartus%20ii%20%e8%b0%83%e7%94%a8%20Modelsim&url=%2fpost%2fQuartus-ii-%25E8%25B0%2583%25E7%2594%25A8-Modelsim"
+      target="_blank" rel="noopener" aria-label="weibo"  data-original-title="分享到微博" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-weibo"></i>      
+    </a>
+    
+    <a href="https://twitter.com/intent/tweet?text=Quartus%20ii%20%e8%b0%83%e7%94%a8%20Modelsim&url=%2fpost%2fQuartus-ii-%25E8%25B0%2583%25E7%2594%25A8-Modelsim"
+      target="_blank" rel="noopener" aria-label="twitter"  data-original-title="分享到 Twitter" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-twitter"></i>      
+    </a>
+
+    <a href="https://telegram.me/share?text=Quartus%20ii%20%e8%b0%83%e7%94%a8%20Modelsim&url=%2fpost%2fQuartus-ii-%25E8%25B0%2583%25E7%2594%25A8-Modelsim"
+      target="_blank" rel="noopener" aria-label="telegram" data-original-title="分享到 Telegram" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-telegram"></i>      
+    </a>
+    
+    <a href="https://www.facebook.com/sharer/sharer.php?title=Quartus%20ii%20%e8%b0%83%e7%94%a8%20Modelsim&u=%2fpost%2fQuartus-ii-%25E8%25B0%2583%25E7%2594%25A8-Modelsim"
+      target="_blank" rel="noopener" aria-label="facebook"  data-original-title="分享到 Facebook" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-facebook-square"></i>      
+    </a>
+
+    <i id="copy-link" class="fa-fw fas fa-link small clipboard" data-clipboard-action="copy" data-clipboard-text="/post/Quartus-ii-%E8%B0%83%E7%94%A8-Modelsim"
+      data-toggle="tooltip" data-placement="top" title="复制链接">
+    </i>
+
+  </span>
+</div>
+
+            </div>
+
+        </div> 
+      </div>
+   </div> 
+
+    <div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
+      <div class="access">
+
+  
+    <div id="access-lastmod" class="post">
+      <h4 data-toc-skip class="panel-heading">最近更新</h4>
+      <ul class="post-content pl-0 pb-1 ml-1 mt-2">
+        
+        <li><a href="/post/Leanote-%E6%94%B9%E9%80%A0%E7%AC%94%E8%AE%B0">Leanote 改造笔记</a></li>
+        
+        <li><a href="/post/HK1-RBOX-X4-%E7%94%B5%E8%A7%86%E7%9B%92%E5%AD%90%E6%8A%98%E8%85%BE%E7%AC%94%E8%AE%B0">HK1 RBOX X4 电视盒子折腾笔记</a></li>
+        
+        <li><a href="/post/LVM-%E7%AE%A1%E7%90%86">LVM 管理</a></li>
+        
+        <li><a href="/post/Visual-Studio-%E6%90%AD%E5%BB%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">Visual Studio 搭建驱动开发环境</a></li>
+        
+        <li><a href="/post/%E7%BE%A4%E6%99%96%E5%8D%87%E7%BA%A7ARPL%E7%AC%94%E8%AE%B0">群晖升级 ARPL 笔记</a></li>
+        
+      </ul>
+    </div> 
+  
+  
+  
+  
+  
+  
+  
+    <div id="access-tags">
+      <h4 data-toc-skip class="panel-heading">热门标签</h4>
+      <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
+  
+      
+        
+          <a class="post-tag" href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0">机器学习</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Linux">Linux</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/ROS">ROS</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Router">Router</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Tensorflow">Tensorflow</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/VPN">VPN</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/%e8%99%9a%e6%8b%9f%e7%bb%84%e7%bd%91">虚拟组网</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/ARM">ARM</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/BLog">BLog</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/C">C</a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+  
+      </div>
+    </div>
+  
+  
+  </div> 
+      <div id="toc-wrapper" class="pl-0 pr-4 mb-5">
+    <h4 class="pl-3 pt-2 mb-2" data-toc-skip>
+        <i class="fa fa-align-justify" title="文章目录"></i><span>文章目录</span>
+    </h4>
+    
+    <nav id="toc" data-toggle="toc"></nav>
+</div> 
+    </div> 
+</div> 
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+      
+<div class="post-navigation d-flex justify-content-between">
+    
+    <a href="/post/EPUB%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3" class="btn btn-outline-primary"
+      prompt="上一篇">
+      <p>EPUB 格式详解</p>
+    </a>
+    
+  
+    
+    <a href="/post/vscode-verilog-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE" class="btn btn-outline-primary"
+      prompt="下一篇">
+      <p>vscode &#43; verilog 环境配置</p>
+    </a>
+    
+  
+  </div>
+      
+
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.cf.ctaoist.com/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'bb42aafbc6a4a1f3d93f',
+    clientSecret: '48162a3b39dbeedcbf25fdb98c29154d1cdab9ac',
+    repo: 'ctaoist.github.io',
+    owner: 'ctaoist', 
+    admin: ["ctaoist"], 
+    id: 'Quartus ii 调用 Modelsim',      
+    distractionFreeMode: false,  
+    labels: ['Gitalk']
+  });
+
+  gitalk.render('gitalk-container');
+</script>
+
+
+    </div>
+  </div>
+</div>
+
+
+<footer class="d-flex w-100 justify-content-center">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="footer-left">
+      <p class="mb-0">
+        © 2021
+        <a href="">Ctaoist</a>.
+        <span data-toggle="tooltip" data-placement="top"
+          title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span>
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <p class="mb-0">
+          Powered by <a href="https://github.com/ctaoist/leanote" target="_blank" rel="noopener">Leanote</a>
+          with <a href="https://github.com/ctaoist/leanote-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.
+      </p>
+    </div>
+  </div> 
+</footer>
+
+<script>
+function search(e) {
+	var keywords = $("#search-input").val();
+	if(!keywords) {
+		location.href = "\/search\/";
+	} else {
+		var tpl = '<form style="display: none" action="\/search\/" method="get">';
+        tpl += '<input name="keywords" value="' + keywords + '" />';
+        tpl += "</form";
+        var $tpl = $(tpl);
+        $('body').append($tpl)
+        $tpl.submit();
+        $tpl.remove();
+	}
+}
+</script>
+
+
+</div> 
+</div> 
+
+
+<div id="mask"></div>
+
+<a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<div id="isPost"></div>
+
+
+<script>
+  
+</script>
+
+
+<script src="//cdn.cf.ctaoist.com/npm/clipboard@2/dist/clipboard.min.js"></script>
+
+<script src="//cdn.cf.ctaoist.com/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/mermaid@8/dist/mermaid.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/npm/chart.js@3/dist/chart.min.js"></script>
+
+<script src="https://cdn.cf.ctaoist.com/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/magnific-popup@1/dist/magnific-popup.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/prism.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/components.js"></script>
+<link rel="stylesheet" href="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/themes/prism.min.css">
+<link href="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.2/public/libs/google-code-prettify/prettify.min.css" type="text/css" rel="stylesheet"/>
+
+<script src="https://cdn.cf.ctaoist.com/npm/katex@0.15/dist/katex.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/katex@0.15/dist/katex.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/markdown-it@12/dist/markdown-it.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-emoji.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/katex.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-container.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-task-lists.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/prismjs.js"></script>
+
+
+<script src="/theme/blog.js"></script>
+<link href="/theme/prism-dark.css" rel="stylesheet">
+<link href="/theme/block-container.css" rel="stylesheet">
+
+
+
+
+<script>
+var content = $.trim($("#markdownContent textarea").val());
+var markdownit = window.markdownit({
+                html: true,
+              })
+                .use(window.markdownitEmoji)
+                
+                .use(window.markdownitKatex)
+                .use(window.markdownitPrismjs, {plugins: ['line-numbers', 'code-header']})
+                .use(window.markdownitTaskLists )
+                .use(window.markdownitContainer, 'success')
+                .use(window.markdownitContainer, 'info')
+                .use(window.markdownitContainer, 'warning')
+                .use(window.markdownitContainer, 'danger');
+document.getElementById('content').innerHTML = markdownit.render(content);
+blogPostInit();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

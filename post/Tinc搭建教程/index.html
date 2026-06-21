@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="ctaoist">
+<link rel="Shortcut icon" href="/theme/images/avatar.jpg">
+
+<title>
+  
+    Tinc 搭建教程
+  
+</title>
+
+
+<link rel="preconnect" href="https://cdn.cf.ctaoist.com">
+<link rel="dns-prefetch" href="https://cdn.cf.ctaoist.com">
+
+<script src="https://cdn.cf.ctaoist.com/npm/jquery@3/dist/jquery.min.js"></script>
+
+<script src="https://cdn.cf.ctaoist.com/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/bootstrap@4/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+
+
+
+
+
+<script src="/theme/topbar.js"></script>
+<script src="/theme/search.js"></script>
+<link href="/theme/style.css" rel="stylesheet">
+
+<style>
+#search-results .post-tags a {
+  font-size: 0.85rem;
+  line-height: 0.85rem;
+}
+</style>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+  ga('create', 'UA-81134010-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+<script>
+$(function () {
+  
+  $('[data-toggle="tooltip"]').tooltip();
+
+  
+  $(window).scroll(() => {
+    if ($(this).scrollTop() > 50 && $("#sidebar-trigger").css("display") === "none") {
+      $("#back-to-top").fadeIn();
+    } else {
+      $("#back-to-top").fadeOut();
+    }
+  });
+  $("#back-to-top").click(() => {
+    $("body,html").animate({ scrollTop: 0 }, 800);
+    return false;
+  });
+
+  
+  const input = $("#search-input");
+  const btnClear = $("#search-cleaner");
+  const searchWrapper = $("#search-wrapper");
+  if (input.val() !== "") {
+    if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+  }
+  input.on("keyup", function (e) {
+    if (input.val() !== "") {
+      if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+    }
+  });
+  btnClear.on("click", function () {
+    input.val("");
+    input.focus(); searchWrapper.addClass("input-focus");
+    btnClear.removeClass("visible");
+  });
+
+  
+  const sidebarUtil = (function () {
+    const ATTR_DISPLAY = "sidebar-display";
+    let isExpanded = false;
+    const body = $("body");
+    return {
+      toggle() {
+        if (isExpanded === false) {
+          body.attr(ATTR_DISPLAY, "");
+        } else {
+          body.removeAttr(ATTR_DISPLAY);
+        }
+        isExpanded = !isExpanded;
+      }
+    };
+  }());
+  $("#sidebar-trigger").click(sidebarUtil.toggle);
+  $("#mask").click(sidebarUtil.toggle);
+});
+</script>
+
+</head>
+<body>
+  
+
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+  
+  <div class="profile-wrapper text-center">
+    
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+      <img src="/theme/images/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+    
+    <div class="site-title mt-3">
+      <a href="/">不见春山</a>
+    </div>
+    <div class="site-subtitle font-italic">骑马倚斜桥，满楼红袖招。</div>
+
+  </div>
+
+  <ul class="w-100">
+
+    
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Home</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/cates" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Categories</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/archives" class="nav-link">
+          <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+          <span>Archives</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/tags" class="nav-link">
+        <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Tags</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/single/About-Me" class="nav-link">
+        <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>About</span>
+      </a>
+    </li>
+
+  </ul> 
+  
+
+  
+
+<script type="text/javascript">
+  class ModeToggle {
+    static get MODE_KEY() { return "mode"; }
+    static get DARK_MODE() { return "dark"; }
+    static get LIGHT_MODE() { return "light"; }
+
+    constructor() {
+      if (this.hasMode) {
+        if (this.isDarkMode) {
+          if (!this.isSysDarkPrefer) {
+            this.setDark();
+          }
+        } else {
+          if (this.isSysDarkPrefer) {
+            this.setLight();
+          }
+        }
+      }
+
+      let self = this;
+
+       
+      this.sysDarkPrefers.addEventListener("change", () => {
+        if (self.hasMode) {
+          if (self.isDarkMode) {
+            if (!self.isSysDarkPrefer) {
+              self.setDark();
+            }
+
+          } else {
+            if (self.isSysDarkPrefer) {
+              self.setLight();
+            }
+          }
+
+          self.clearMode();
+        }
+
+        self.updateMermaid();
+      });
+
+    }  
+
+    get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); }
+
+    get isSysDarkPrefer() { return this.sysDarkPrefers.matches; }
+
+    get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; }
+
+    get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; }
+
+    get hasMode() { return this.mode != null; }
+
+    get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); }
+
+     
+    get modeStatus() {
+      if (this.isDarkMode
+        || (!this.hasMode && this.isSysDarkPrefer)) {
+        return ModeToggle.DARK_MODE;
+      } else {
+        return ModeToggle.LIGHT_MODE;
+      }
+    }
+
+    setDark() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+    }
+
+    setLight() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+    }
+
+    clearMode() {
+      $('html').removeAttr(ModeToggle.MODE_KEY);
+      sessionStorage.removeItem(ModeToggle.MODE_KEY);
+    }
+
+    updateMermaid() {
+      if (typeof mermaid !== "undefined") {
+        let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE ? "dark" : "default");
+        let config = { theme: expectedTheme };
+
+         
+        
+        
+        
+        
+        
+        
+        $(".mermaid").each(function() {
+          
+          let svgCode = "";
+          $(this).prev().children(1).children("ol").children("li").each(function () {
+            svgCode = svgCode + $(this).text() + "\n";
+          });
+          $(this).removeAttr("data-processed");
+          $(this).html(svgCode);
+        });
+        mermaid.initialize(config);
+        mermaid.init({noteMargin: 10}, ".mermaid");
+      }
+    }
+
+  }  
+
+  const toggle = new ModeToggle();
+
+  function flipMode() {
+    if (toggle.hasMode) {
+      if (toggle.isSysDarkPrefer) {
+        if (toggle.isLightMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setLight();
+        }
+
+      } else {
+        if (toggle.isDarkMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setDark();
+        }
+      }
+
+    } else {
+      if (toggle.isSysDarkPrefer) {
+        toggle.setLight();
+      } else {
+        toggle.setDark();
+      }
+    }
+
+    toggle.updateMermaid();
+
+  }  
+
+</script>
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center">
+      <a id="mode-toggle-wrapper" tabindex="0" onclick="flipMode()">
+        <i class="mode-toggle fas fa-adjust"></i>
+      </a>
+      <span class="icon-border"></span>
+      
+        
+          <a href="https://github.com/ctaoist" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        
+          <a href="https://twitter.com/a275761919" aria-label="twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+         
+       
+      <a href="/rss.xml" aria-label="rss"><i class="fas fa-rss"></i></a>
+
+  </div> 
+</div>
+
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+      
+          <span><a href="/">Home</a></span>
+          
+            <span>Tinc 搭建教程</span>
+          
+    </span>
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      
+        Tinc 搭建教程
+      
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <form id="search-wrapper" class="align-items-center" onsubmit="search(event);return false;">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search" value=""
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </form>
+    <span id="search-cancel" >取消</span>
+  </div>
+</div> 
+
+<script src="//cdn.busuanzi.cc/busuanzi/3.6.9/busuanzi.min.js" defer></script>
+
+
+
+<div id="main-wrapper">
+  <div id="main">
+<div class="row">
+  <div id="post-wrapper" class="col-12 col-lg-11 col-xl-8">
+      <div class="post pb-5 pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4 mb-md-4">
+      
+        <h1 id="post-title" data-toc-skip> Tinc 搭建教程 </h1>
+
+        <div class="post-meta text-muted d-flex flex-column">
+          
+          <div>
+            <span>由 </span><span class="semi-bold">ctaoist</span>
+            
+            <span class="timeago" data-toggle="tooltip" data-placement="bottom" title="2021-11-30 05:28:14">发布于 2021-11-30</span>
+            ·
+            <span class="timeago" data-toggle="tooltip" data-placement="bottom" title="2022-02-24 06:57:22">最后更新：2022-02-24</span>
+            
+            
+              <i class="far fa-eye fa-fw"></i>
+              
+                <span id="busuanzi_page_pv"></span>
+              
+            
+          </div>
+        </div>
+
+        <div class="post-content">
+
+          <div class="desc markdown-content" id="content">
+        	
+        		<div id="markdownContent" style="display: none">
+        			
+        			<textarea>## 简介
+
+最近从 Zerotier 切换到 Tinc，是由于公司网络的 NAT 层数太多，是 `Symmetric NAT`，Zerotier p2p 打洞几乎不成功，连接国内自建的 Moon 都费劲。切换到 Tinc 后目前体验良好。
+
+附一个NAT类型测试工具：[NAT类型测试.zip](/downloads/NAT类型测试.zip)
+
+Tinc 是一个组建虚拟专用网络（VPN）的工具，以 GNU 协议发布，通过隧道及加密技术在互联网上点与点之间创建专有网络。tinc 在网络层工作，因此无需对现有软件进行修改和配置。您可以使用 tinc 搭建专属的低延迟、高带宽、可扩展的 P2P VPN。其数据通讯经过加密和压缩，能避免敏感数据和隐私的泄露。
+
+**无论何时何地，只要能连入互联网，就可以安全的访问 VPN。**
+
+## 服务端
+
+### 安装
+
+```
+apt install tinc
+```
+
+tinc 的默认主配置目录为 `/etc/tinc`，现在这个目录里面只有一个文件 `nets.boot`。
+
+### 创建配置文件
+
+```
+mkdir -p /etc/tinc/lyf_qq_vpn # 创建一个名为 lyf_qq_vpn 的 vpn，名字可以随便起
+mkdir -p /etc/tinc/lyf_qq_vpn/hosts # 创建主机文件夹
+```
+
+编辑配置文件 `vim /etc/tinc/lyf_qq_vpn/tinc.conf`：
+
+```
+Name = tinc_qq
+#Interface = tun0
+#Internet 走 IPv4 协议
+AddressFamily = ipv4
+#设置使用 switch 模式 默认为 router，还有hub
+Mode = switch
+```
+
+编辑启动脚本 `vim /etc/tinc/lyf_qq_vpn/tinc-up`：
+
+```sh
+#!/bin/sh
+ifconfig $INTERFACE 10.10.20.1 netmask 255.255.255.0
+```
+
+编辑停止脚本 `vim /etc/tinc/lyf_qq_vpn/tinc-down`：
+
+```sh
+#!/bin/sh
+ifconfig $INTERFACE down
+```
+
+创建本主机描述文件 `vim /etc/tinc/lyf_qq_vpn/hosts/tinc_qq`，文件名和`tinc.conf.Name`字段对应：
+
+```sh
+Address = 1.2.3.4 # 公网ip地址
+Subnet = 10.10.20.1 # vpn中的本机地址
+```
+
+### 生成密钥
+
+1.0.3x 版本：
+
+```sh
+tincd -n lyf_qq_vpn -K
+```
+
+1.1.x 版本：
+
+```sh
+tinc -n lyf_qq_vpn generate-rsa-keys
+tinc -n lyf_qq_vpn generate-ed25519-keys
+```
+
+### 调试
+
+```sh
+tincd -d -D -n lyf_qq_vpn # -D:保持前台运行 -d:Debug级别
+tincd -k # 关闭正在运行的tinc进程
+```
+
+### 启动设为自启
+
+```sh
+systemctl start tinc@lyf_qq_vpn # 启动
+systemctl enable tinc@lyf_qq_vpn
+```
+
+## 客户端
+
+总共需要编辑4个文件，然后和服务端[交换公钥](#交换公钥)，**交换密钥后客户端启动后才能连上服务端**。
+
+写了一个部署 tinc 客户端的脚本，[地址](/downloads/deploy_tinc.sh)，支持Linux及类似系统，需要手动填写 `tinc.conf` 中的 `ConnectTo =`选项，需要连接的服务器。
+
+### Linux客户端
+
+基本和服务端搭建一样，只不过在本机描述文件中不需要填写公网ip，`tinc-up`和描述文件中都需要指定本机的ip。
+
+创建配置文件 `vim /etc/tinc/lyf_qq_vpn/tinc.conf`：
+
+```conf
+# 本机的名字
+Name = arch_csrd
+# 指定启动时，自动连接的 tinc_ali， 可以使用多个ConnectTo来自动连接多个主机。
+ConnectTo = tinc_qq
+#Internet 走 IPv4 协议
+AddressFamily = ipv4
+#设置使用 switch 模式 默认为 router
+Mode = switch
+```
+
+创建描述文件 `vim /etc/tinc/lyf_qq_vpn/hosts/arch_csrd`：
+
+```
+Subnet = 10.10.20.2
+```
+
+然后生成密钥。
+
+### OpenWrt 客户端
+
+将整段局域网网络都接入 VPN 网络中，安装方法和 [Linux客户端相同](#linux客户端)
+
+```/etc/config/tinc
+config tinc-net lyf_qq_vpn
+    option enabled 1
+    option AddressFamily ipv4
+    list ConnectTo tinc_qq
+    option Mode switch
+    option Name lede
+
+config tinc-host lede
+    option enabled 0
+    option net lyf_qq_vpn
+    option Subnet 10.10.20.2
+```
+
+启动：
+
+```sh
+/etc/init.d/tinc start
+/etc/init.d/tinc enable # 设为开机启动
+```
+
+### Mac OSX 客户端
+
+需要先安装 [Homebrew](https://brew.sh/)，然后安装 tinc：
+
+```sh
+brew install --cask tuntap # tinc 依赖 tuntap
+brew install tinc
+```
+
+&gt;注：官方仓库在2021年10月30日把 tuntap 删除了，可以把 [tuntap.rb](/downloads/tuntap.rb) 放到 `$(brew --prefix)/Library/Taps/homebrew/homebrew-cask/Casks` 目录。
+
+进入tinc安装目录：`cd &#34;$(brew --prefix/Cellar/tinc)&#34;`，剩下步骤和 [Linux 客户端相同](#linux客户端)
+
+#### 设为自启
+
+MacOS 通过 Lauchd 管理系统服务和自启项。需要设置 .plist 文件来设为自启。
+
+以root权限向 `/Library/LaunchDaemons/tincd.lyf_qq_vpn.plist` 写入：
+
+```xlm
+&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;
+&lt;!DOCTYPE plist PUBLIC &#34;-//Apple//DTD PLIST 1.0//EN&#34; &#34;http://www.apple.com/DTDs/PropertyList-1.0.dtd&#34;&gt;
+&lt;plist version=&#34;1.0&#34;&gt;
+&lt;dict&gt;
+    &lt;key&gt;KeepAlive&lt;/key&gt;
+    &lt;true/&gt;
+    &lt;key&gt;Label&lt;/key&gt;
+    &lt;string&gt;tinc.lyf_qq_vpn&lt;/string&gt;
+    &lt;key&gt;ProgramArguments&lt;/key&gt;
+    &lt;array&gt;
+        &lt;string&gt;/usr/local/sbin/tincd&lt;/string&gt;
+        &lt;string&gt;-n&lt;/string&gt;
+        &lt;string&gt;lyf_qq_vpn&lt;/string&gt;
+        &lt;string&gt;-D&lt;/string&gt;
+        &lt;string&gt;--pidfile=/usr/local/var/run/tinc.lyf_qq_vpn.pid&lt;/string&gt;
+    &lt;/array&gt;
+    &lt;key&gt;StandardErrorPath&lt;/key&gt;
+    &lt;string&gt;/tmp/tinc.lyf_qq_vpn.err&lt;/string&gt;
+    &lt;key&gt;StandardOutPath&lt;/key&gt;
+    &lt;string&gt;/tmp/tinc.lyf_qq_vpn.out&lt;/string&gt;
+&lt;/dict&gt;
+&lt;/plist&gt;
+```
+
+&gt;注意**修改 VPN 名字**。
+
+最后启动服务：`sudo launchctl load /Library/LaunchDaemons/tinc.lyf_qq_vpn.plist`
+
+### windows 客户端
+
+&gt;https://chanix.github.io/TincCookbook/examples/3-HowToInstallTincOnWin10.html
+
+首先[官网](https://www.tinc-vpn.org/download/)下载安装包或者[github仓库](https://github.com/gsliepen/tinc/releases)下载，然后安装，需要**安装TUP驱动**，这个驱动安装包自带，**安装完后需要打开网络配置中心得到虚拟网卡的名称**。
+
+如果 Tinc 自带的 Tapinstall.exe 安装失败，则可以下载[这个](https://build.openvpn.net/downloads/releases/tap-windows-9.21.2.exe)进行安装。
+
+&gt;**注**：windowns 版 1.0.35 的命令行用法和 Linux 下的类似，1.1pre17 及以上版本用法产生了很大的变化，以下是基于 1.0.35 版本的。
+
+管理员打开 Powershell，编辑配置文件 `notepad &#39;C:\Program Files (x86)\tinc\lyf_qq_vpn\tinc.conf&#39;`：
+
+```
+Name = win10_csrd
+ConnectTo tinc_qq
+#指定虚拟网卡名称
+Interface = 以太网 2
+AddressFamily = ipv4
+Mode = switch
+```
+
+编辑描述文件：`notepad &#39;C:\Program Files (x86)\tinc\lyf_qq_vpn\hosts\win10_csrd&#39;`
+
+```
+Subnet = 10.10.20.3/32
+```
+
+编辑启动文件 `notepad &#39;C:\Program Files (x86)\tinc\lyf_qq_vpn\tinc-up.bat&#39;`：
+
+```
+netsh interface ip set address &#34;以太网 2&#34; static 10.10.20.3 255.255.255.0
+```
+
+编辑停止文件 `notepad &#39;C:\Program Files (x86)\tinc\lyf_qq_vpn\tinc-down.bat&#39;`：
+
+```
+netsh interface ip set address &#34;以太网 2&#34; source=dhcp
+```
+
+注意虚拟网卡的名称。
+
+然后需要生成密钥。
+
+[交换公钥](#交换公钥)后启动：
+
+```
+& tincd -c &#39;C:\Program Files (x86)\tinc\lyf_qq_vpn&#39;
+```
+
+系统提示：
+
+```
+tinc.lyf_qq_vpn service installed
+tinc.lyf_qq_vpn service started
+```
+
+windows 下的 tinc 启动的时候会自动创建相应的服务。
+
+## 交换公钥
+
+- 将服务器的 `/etc/tinc/lyf_qq_vpn/hosts/tinc_qq` 复制到 Linux 客户端的 `/etc/tinc/lyf_qq_vpn/hosts` 目录；
+- 将 Linux 客户端的 `/etc/tinc/lyf_qq_vpn/hosts/arch_csrd` 复制到服务器的`/etc/tinc/lyf_qq_vpn/hosts` 目录。
+- 将服务器的 `/etc/tinc/lyf_qq_vpn/hosts/tinc_qq` 复制到 Windows 客户端的 `C:\Program Files (x86)\tinc\lyf_qq_vpn\hosts\` 目录
+- 将 Windows 客户端的 `C:\Program Files (x86)\tinc\lyf_qq_vpn\hosts\win10_csrd` 复制到服务器的`/etc/tinc/lyf_qq_vpn` 目录。</textarea>
+        		</div> 
+        		<div style="padding: 20px; text-align: center">
+        			<img src="/theme/images/loading-32.gif" />
+        		</div>
+        	
+          </div> 
+        </div> 
+
+        <div class="post-tail-wrapper text-muted">
+            
+            
+              <div class="post-meta mb-3">
+                <i class="far fa-folder-open fa-fw mr-1"></i>
+                
+                  <a href="/cate/VPN">VPN</a>
+                
+              </div>
+            
+
+            
+            <div class="post-tags">
+              
+                <i class="fa fa-tags fa-fw mr-1"></i>
+                
+                  
+                  <a href="/tag/VPN" class="post-tag no-text-decoration">VPN</a>
+                  
+                  <a href="/tag/%e8%99%9a%e6%8b%9f%e7%bb%84%e7%bd%91" class="post-tag no-text-decoration">虚拟组网</a>
+                  
+               
+            </div> 
+
+            
+            <div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2">
+              <div class="license-wrapper">
+                该博客文章由作者通过
+                  <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>进行授权。
+              </div>
+              
+              
+<div class="share-wrapper">
+  
+  <span class="share-label text-muted mr-1">分享</span>
+  <span class="share-icons">
+  
+    <a href="http://service.weibo.com/share/share.php?title=Tinc%20%e6%90%ad%e5%bb%ba%e6%95%99%e7%a8%8b&url=%2fpost%2fTinc%25E6%2590%25AD%25E5%25BB%25BA%25E6%2595%2599%25E7%25A8%258B"
+      target="_blank" rel="noopener" aria-label="weibo"  data-original-title="分享到微博" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-weibo"></i>      
+    </a>
+    
+    <a href="https://twitter.com/intent/tweet?text=Tinc%20%e6%90%ad%e5%bb%ba%e6%95%99%e7%a8%8b&url=%2fpost%2fTinc%25E6%2590%25AD%25E5%25BB%25BA%25E6%2595%2599%25E7%25A8%258B"
+      target="_blank" rel="noopener" aria-label="twitter"  data-original-title="分享到 Twitter" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-twitter"></i>      
+    </a>
+
+    <a href="https://telegram.me/share?text=Tinc%20%e6%90%ad%e5%bb%ba%e6%95%99%e7%a8%8b&url=%2fpost%2fTinc%25E6%2590%25AD%25E5%25BB%25BA%25E6%2595%2599%25E7%25A8%258B"
+      target="_blank" rel="noopener" aria-label="telegram" data-original-title="分享到 Telegram" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-telegram"></i>      
+    </a>
+    
+    <a href="https://www.facebook.com/sharer/sharer.php?title=Tinc%20%e6%90%ad%e5%bb%ba%e6%95%99%e7%a8%8b&u=%2fpost%2fTinc%25E6%2590%25AD%25E5%25BB%25BA%25E6%2595%2599%25E7%25A8%258B"
+      target="_blank" rel="noopener" aria-label="facebook"  data-original-title="分享到 Facebook" data-toggle="tooltip" data-placement="top">
+      <i class="fa-fw fab fa-facebook-square"></i>      
+    </a>
+
+    <i id="copy-link" class="fa-fw fas fa-link small clipboard" data-clipboard-action="copy" data-clipboard-text="/post/Tinc%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B"
+      data-toggle="tooltip" data-placement="top" title="复制链接">
+    </i>
+
+  </span>
+</div>
+
+            </div>
+
+        </div> 
+      </div>
+   </div> 
+
+    <div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down">
+      <div class="access">
+
+  
+    <div id="access-lastmod" class="post">
+      <h4 data-toc-skip class="panel-heading">最近更新</h4>
+      <ul class="post-content pl-0 pb-1 ml-1 mt-2">
+        
+        <li><a href="/post/Leanote-%E6%94%B9%E9%80%A0%E7%AC%94%E8%AE%B0">Leanote 改造笔记</a></li>
+        
+        <li><a href="/post/HK1-RBOX-X4-%E7%94%B5%E8%A7%86%E7%9B%92%E5%AD%90%E6%8A%98%E8%85%BE%E7%AC%94%E8%AE%B0">HK1 RBOX X4 电视盒子折腾笔记</a></li>
+        
+        <li><a href="/post/LVM-%E7%AE%A1%E7%90%86">LVM 管理</a></li>
+        
+        <li><a href="/post/Visual-Studio-%E6%90%AD%E5%BB%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">Visual Studio 搭建驱动开发环境</a></li>
+        
+        <li><a href="/post/%E7%BE%A4%E6%99%96%E5%8D%87%E7%BA%A7ARPL%E7%AC%94%E8%AE%B0">群晖升级 ARPL 笔记</a></li>
+        
+      </ul>
+    </div> 
+  
+  
+  
+  
+  
+  
+  
+    <div id="access-tags">
+      <h4 data-toc-skip class="panel-heading">热门标签</h4>
+      <div class="d-flex flex-wrap mt-3 mb-1 mr-3">
+  
+      
+        
+          <a class="post-tag" href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0">机器学习</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Linux">Linux</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/ROS">ROS</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Router">Router</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/Tensorflow">Tensorflow</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/VPN">VPN</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/%e8%99%9a%e6%8b%9f%e7%bb%84%e7%bd%91">虚拟组网</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/ARM">ARM</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/BLog">BLog</a>
+        
+      
+        
+          <a class="post-tag" href="/tag/C">C</a>
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+  
+      </div>
+    </div>
+  
+  
+  </div> 
+      <div id="toc-wrapper" class="pl-0 pr-4 mb-5">
+    <h4 class="pl-3 pt-2 mb-2" data-toc-skip>
+        <i class="fa fa-align-justify" title="文章目录"></i><span>文章目录</span>
+    </h4>
+    
+    <nav id="toc" data-toggle="toc"></nav>
+</div> 
+    </div> 
+</div> 
+
+<div class="row">
+  <div class="col-12 col-lg-11 col-xl-8">
+    <div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4">
+      
+<div class="post-navigation d-flex justify-content-between">
+    
+    <a href="/post/MiniDlna%E6%B7%BB%E5%8A%A0%E5%AF%B9rmvb%E7%9A%84%E6%94%AF%E6%8C%81" class="btn btn-outline-primary"
+      prompt="上一篇">
+      <p>MiniDlna 添加对 rmvb 的支持</p>
+    </a>
+    
+  
+    
+    <a href="/post/Tensorflow%E8%B0%83%E7%94%A8Matlab%E7%94%9F%E6%88%90%E7%9A%84.mat%E6%96%87%E4%BB%B6" class="btn btn-outline-primary"
+      prompt="下一篇">
+      <p>Tensorflow 调用 Matlab 生成的 .mat 文件</p>
+    </a>
+    
+  
+  </div>
+      
+
+<div id="gitalk-container"></div>
+
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/gitalk@1/dist/gitalk.min.css">
+<script src="//cdn.cf.ctaoist.com/npm/gitalk@1/dist/gitalk.min.js"></script>
+
+<script>
+  var gitalk = new Gitalk({
+    clientID: 'bb42aafbc6a4a1f3d93f',
+    clientSecret: '48162a3b39dbeedcbf25fdb98c29154d1cdab9ac',
+    repo: 'ctaoist.github.io',
+    owner: 'ctaoist', 
+    admin: ["ctaoist"], 
+    id: 'Tinc 搭建教程',      
+    distractionFreeMode: false,  
+    labels: ['Gitalk']
+  });
+
+  gitalk.render('gitalk-container');
+</script>
+
+
+    </div>
+  </div>
+</div>
+
+
+<footer class="d-flex w-100 justify-content-center">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="footer-left">
+      <p class="mb-0">
+        © 2021
+        <a href="">Ctaoist</a>.
+        <span data-toggle="tooltip" data-placement="top"
+          title="除非另有说明，本网站上的博客文章均由作者按照知识共享署名 4.0 国际 (CC BY 4.0) 许可协议进行授权。">保留部分权利。</span>
+      </p>
+    </div>
+
+    <div class="footer-right">
+      <p class="mb-0">
+          Powered by <a href="https://github.com/ctaoist/leanote" target="_blank" rel="noopener">Leanote</a>
+          with <a href="https://github.com/ctaoist/leanote-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.
+      </p>
+    </div>
+  </div> 
+</footer>
+
+<script>
+function search(e) {
+	var keywords = $("#search-input").val();
+	if(!keywords) {
+		location.href = "\/search\/";
+	} else {
+		var tpl = '<form style="display: none" action="\/search\/" method="get">';
+        tpl += '<input name="keywords" value="' + keywords + '" />';
+        tpl += "</form";
+        var $tpl = $(tpl);
+        $('body').append($tpl)
+        $tpl.submit();
+        $tpl.remove();
+	}
+}
+</script>
+
+
+</div> 
+</div> 
+
+
+<div id="mask"></div>
+
+<a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<div id="isPost"></div>
+
+
+<script>
+  
+</script>
+
+
+<script src="//cdn.cf.ctaoist.com/npm/clipboard@2/dist/clipboard.min.js"></script>
+
+<script src="//cdn.cf.ctaoist.com/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/mermaid@8/dist/mermaid.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/npm/chart.js@3/dist/chart.min.js"></script>
+
+<script src="https://cdn.cf.ctaoist.com/npm/magnific-popup@1/dist/jquery.magnific-popup.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/magnific-popup@1/dist/magnific-popup.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/prism.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/components.js"></script>
+<link rel="stylesheet" href="//cdn.cf.ctaoist.com/npm/prismjs@1.26.0/themes/prism.min.css">
+<link href="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.2/public/libs/google-code-prettify/prettify.min.css" type="text/css" rel="stylesheet"/>
+
+<script src="https://cdn.cf.ctaoist.com/npm/katex@0.15/dist/katex.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/katex@0.15/dist/katex.min.css">
+
+<script src="//cdn.cf.ctaoist.com/npm/markdown-it@12/dist/markdown-it.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-emoji.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/katex.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-container.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/markdown-it-task-lists.min.js"></script>
+<script src="//cdn.cf.ctaoist.com/gh/ctaoist/leanote@2.7.4/public/libs/markdown-it/plugins/prismjs.js"></script>
+
+
+<script src="/theme/blog.js"></script>
+<link href="/theme/prism-dark.css" rel="stylesheet">
+<link href="/theme/block-container.css" rel="stylesheet">
+
+
+
+
+<script>
+var content = $.trim($("#markdownContent textarea").val());
+var markdownit = window.markdownit({
+                html: true,
+              })
+                .use(window.markdownitEmoji)
+                
+                .use(window.markdownitKatex)
+                .use(window.markdownitPrismjs, {plugins: ['line-numbers', 'code-header']})
+                .use(window.markdownitTaskLists )
+                .use(window.markdownitContainer, 'success')
+                .use(window.markdownitContainer, 'info')
+                .use(window.markdownitContainer, 'warning')
+                .use(window.markdownitContainer, 'danger');
+document.getElementById('content').innerHTML = markdownit.render(content);
+blogPostInit();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+
+
+</body>
+</html>

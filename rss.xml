@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>不见春山</title>
+  <link>https://blog.ctaoist.com</link>
+  <description>骑马倚斜桥，满楼红袖招。</description>
+  <item>
+    <title>WireGuard 搭建组网教程</title>
+    <link>https://blog.ctaoist.com/post/WireGuard-%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B</link>
+    <description>IOS 只支持一个 vpn 连接，如果想科学上网和连上家里的局域网，就需要频繁切换 vpn。之前使用了 tailscale 组网，choc 支持 tailscale，但作者疑似跑路。 
+Stash 和 Surge 支持 wireguard 协议，这样出国和回家就能在同一个 vpn 中实现，不同来回切换，索性再用 wireguard 再组一个虚拟网络。 
+
+shadowrocket 也支持 wireguard，但我尝试了一下，和服务端握手后仍然 ping 不通。 
+
+网络拓扑图如下： 
+ 
+用一个有公网服务器做 WireGuard 服务端，OpenWrt 和 IOS 做客户端。WireGuard</description>
+    <pubDate>14 Jun 26 11:00 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/WireGuard-%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B</guid>
+  </item>
+  <item>
+    <title>Visual Studio 搭建驱动开发环境</title>
+    <link>https://blog.ctaoist.com/post/Visual-Studio-%E6%90%AD%E5%BB%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83</link>
+    <description>Windows 的驱动开发环境需要安装 WDK，需要安装的 WDK 版本和 SDK 以及 Visual Studio 的版本均相关，版本号和 build 号都要能对上，搭建起来体验是极其差。 
+比较方便的方法，还是使用 winget 安装。 
+查询 SDK 版本： 
+  
+winget search --source winget --id Microsoft.WindowsSDK
+Copy     
+名称                                                       ID                              版本------</description>
+    <pubDate>08 Apr 25 09:25 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/Visual-Studio-%E6%90%AD%E5%BB%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83</guid>
+  </item>
+  <item>
+    <title>群晖升级 ARPL 笔记</title>
+    <link>https://blog.ctaoist.com/post/%E7%BE%A4%E6%99%96%E5%8D%87%E7%BA%A7ARPL%E7%AC%94%E8%AE%B0</link>
+    <description>版本变迁
+原版 arpl 是巴西人写的，好像停更了，然后 arpl-i18n 继续维护，后来由于某种原因这个也听更了，目前最新的引导是 rr。 
+并且 rr 从 24.3.0 开始要求引导磁盘大小是4G，所以如果引导磁盘大小不够的话还需要扩容。 
+按照 RR 官方给的升级教程，尝试了很多次都失败。我群晖运行在 pve 上，尝试升级的成本比较低。我最开始的版本是 arpl-1.1beta，按照教程先升级到 arpl-i18n-23.10.4，这一步没有问题，然后再升级到 rr-24.x.x，这一步始终失败。 
+好像是 RR 改了架构，支持热更新，改动比较大，所以升级就比较麻烦。甚至把升级文件 u</description>
+    <pubDate>26 Jul 24 02:44 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/%E7%BE%A4%E6%99%96%E5%8D%87%E7%BA%A7ARPL%E7%AC%94%E8%AE%B0</guid>
+  </item>
+  <item>
+    <title>本地部署大语言模型</title>
+    <link>https://blog.ctaoist.com/post/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B</link>
+    <description>现在才玩大语言模型虽然有点迟了，但在本地部署的方案也比较成熟，不会遇到什么坑。 
+  
+下载模型
+开源的大模型有很多，哪个模型中文更好也没有经验，先选择中文羊驼大模型三期项目试试效果。 
+按照该项目作者的推荐下载 ggml-model-q8_0.gguf。 
+也可以通过 ollama 下载，省去后续的转换过程（转换过程很慢）： 
+  
+ollama run wangshenzhi/llama3-8b-chinese-chat-ollama-q8
+Copy   
+ollama 大语言模型镜像地址：https://ollama.com/wangshenzhi/llama3-8b-chinese-c</description>
+    <pubDate>23 Jul 24 03:34 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B</guid>
+  </item>
+  <item>
+    <title>LVM 管理</title>
+    <link>https://blog.ctaoist.com/post/LVM-%E7%AE%A1%E7%90%86</link>
+    <description>逻辑卷是使用逻辑卷组管理(Logic Volume Manager)创建出来的设备，如果要了解逻辑卷，那么首先需要了解逻辑卷管理中的一些概念。 
+
+物理卷（Physical Volume,PV）：也就是物理磁盘分区，如果想要使用LVM来管理这个分区，可以使用fdisk将其ID改为LVM可以识别的值，即8e。
+卷组（Volume Group,VG）：PV的集合
+逻辑卷（Logic Volume,LV）：VG中画出来的一块逻辑磁盘
+
+具体架构如下： 
+ 
+  
+物理卷
+  
+# pvcreate 用于创建物理卷，可以使用磁盘，也可以使用磁盘分区创建物理卷pvcreate /dev/sdb[1]# </description>
+    <pubDate>12 Jan 24 06:08 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/LVM-%E7%AE%A1%E7%90%86</guid>
+  </item>
+  <item>
+    <title>使用usbip网络转发usb设备到远程主机</title>
+    <link>https://blog.ctaoist.com/post/%E4%BD%BF%E7%94%A8usbip%E7%BD%91%E7%BB%9C%E8%BD%AC%E5%8F%91usb%E8%AE%BE%E5%A4%87%E5%88%B0%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA</link>
+    <description>有时候需要远程调试 USB 设备，使用 usbip 就很方便。 
+  
+安装
+  
+apt install usbip# 安装完后导入内核模块modprobe usbip_coremodprobe usbip_hostCopy     
+服务端
+  
+usbipd -D # 后台运行usbip list -l # 查看当前可用usb设备usbip bind --busid=ID # 绑定 usb 设备Copy   如： 
+  
+usbip list -l- busid 1-1.1 (0424:ec00)   Microchip Technology, Inc. (formerly SMSC) </description>
+    <pubDate>11 Dec 23 06:19 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/%E4%BD%BF%E7%94%A8usbip%E7%BD%91%E7%BB%9C%E8%BD%AC%E5%8F%91usb%E8%AE%BE%E5%A4%87%E5%88%B0%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA</guid>
+  </item>
+  <item>
+    <title>HK1 RBOX X4 电视盒子折腾笔记</title>
+    <link>https://blog.ctaoist.com/post/HK1-RBOX-X4-%E7%94%B5%E8%A7%86%E7%9B%92%E5%AD%90%E6%8A%98%E8%85%BE%E7%AC%94%E8%AE%B0</link>
+    <description>新入手了一个 HK1 RBOX X4，不折腾一下怎么睡得着觉。 
+  
+SlimBox
+一共有 3 种方法： 
+
+卡刷：使用 Burn_Card_Maker 把 slimbox 镜像写入一张 tf 卡中，断电后用棉签之类短按住 av 孔里的 reset 键不放，然后通电，会自动进行升级。
+线刷：
+
+安装官方烧写工具 Amlogic USB Burning Tool 3.2 版本（简称 UBT），加载镜像，点击开始
+使用双公头的 USB 线，一端插入电脑，然后同样按住 reset 键不放
+把 USB 短另一头插入 RBOX 的 USB2.0 接口中
+直到烧写完成，点击停止后再拔出
+
+
+强制烧写：</description>
+    <pubDate>05 Dec 23 16:48 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/HK1-RBOX-X4-%E7%94%B5%E8%A7%86%E7%9B%92%E5%AD%90%E6%8A%98%E8%85%BE%E7%AC%94%E8%AE%B0</guid>
+  </item>
+  <item>
+    <title>Altera 烧写双镜像</title>
+    <link>https://blog.ctaoist.com/post/Altera%E7%83%A7%E5%86%99%E5%8F%8C%E9%95%9C%E5%83%8F</link>
+    <description>简介
+双镜像原理： 
+ 
+各种配置下 Flash 分布： 
+ 
+  
+双镜像
+首先需要创建一个 dual boot ip 核： 
+ 
+在顶层文件里例化： 
+  
+reg clk_2 = 1'b0;always @(posedge FPGA_CLK100M_P)  clk_2 &amp;lt;= ~clk_2;dual_boot dualboot_u(    .clk_clk(clk_2),       //   clk.clk    .reset_reset_n(1'b0)  // reset.reset_n);Copy   原来的时钟太快，在这里做了个 2 分频。 
+接着创建一个 revision：</description>
+    <pubDate>15 Nov 23 01:48 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/Altera%E7%83%A7%E5%86%99%E5%8F%8C%E9%95%9C%E5%83%8F</guid>
+  </item>
+  <item>
+    <title>聚类</title>
+    <link>https://blog.ctaoist.com/post/%E8%81%9A%E7%B1%BB</link>
+    <description>k-means
+
+选择初始化的 K 个样本作为初始聚类中心 c=c1,c2,...,ckc = c_1, c_2,...,c_kc=c1​,c2​,...,ck​；
+针对数据集中每个样本 xix_ixi​ 计算它到 k 个聚类中心的距离并将其分到距离最小的聚类中心所对应的类中；
+针对每个类别 cjc_jcj​，重新计算它的聚类中心（即属于该类的所有样本的质心）；
+重复上面 2 3 两步操作，直到达到某个中止条件（迭代次数、最小误差变化等）。
+
+目标函数为： 
+  
+J(C)=∑kK∑idik2J(C) = \sum_k^K\sum_i d_{ik}^2
+J(C)=k∑K​i∑​dik2​ 
+常</description>
+    <pubDate>01 Nov 23 13:14 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/%E8%81%9A%E7%B1%BB</guid>
+  </item>
+  <item>
+    <title>ROS修改 MTU 和 MSS 解决上网慢和页面显示不全问题</title>
+    <link>https://blog.ctaoist.com/post/ROS%E4%BF%AE%E6%94%B9MTU%E5%92%8CMSS%E8%A7%A3%E5%86%B3%E4%B8%8A%E7%BD%91%E6%85%A2%E5%92%8C%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8%E9%97%AE%E9%A2%98</link>
+    <description>有时候国内的一些平台的一些资源加载不出来，ipv4 有些网站慢，ipv6 就是卡顿、资源完全加载不出来，比如起点小说网的图片，微信的图片，抖音一些的相关资源等。 
+为此我还搭建了 mosdsn 服务，配置某些网站在查询域名的时候只返回 ipv4 的地址，后来发现没有这个必要。 
+故障原因是 MSS 设置不正确，而服务器有设置不允许分片，所以导致部分数据包被丢包，最终导致结果如上。由于MSS 属于 Option，非强制要求。。 
+首先 Ros 的 Actual MTU 值或者 Max MTU 值改成和原有光猫的 MTU 值。如果 pppoe 已经拨通的情况下就以 Actual MTU 为准。 
+</description>
+    <pubDate>15 Sep 23 07:10 UTC</pubDate>
+    <guid>https://blog.ctaoist.com/post/ROS%E4%BF%AE%E6%94%B9MTU%E5%92%8CMSS%E8%A7%A3%E5%86%B3%E4%B8%8A%E7%BD%91%E6%85%A2%E5%92%8C%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8%E9%97%AE%E9%A2%98</guid>
+  </item>
+</channel>
+</rss>

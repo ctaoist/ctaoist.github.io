@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="author" content="ctaoist">
+<link rel="Shortcut icon" href="/theme/images/avatar.jpg">
+
+<title>
+  
+      Search-
+  
+</title>
+
+
+<link rel="preconnect" href="https://cdn.cf.ctaoist.com">
+<link rel="dns-prefetch" href="https://cdn.cf.ctaoist.com">
+
+<script src="https://cdn.cf.ctaoist.com/npm/jquery@3/dist/jquery.min.js"></script>
+
+<script src="https://cdn.cf.ctaoist.com/combine/npm/popper.js@1.16.1,npm/bootstrap@4/dist/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/bootstrap@4/dist/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="https://cdn.cf.ctaoist.com/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+
+
+
+
+
+<script src="/theme/topbar.js"></script>
+<script src="/theme/search.js"></script>
+<link href="/theme/style.css" rel="stylesheet">
+
+<style>
+#search-results .post-tags a {
+  font-size: 0.85rem;
+  line-height: 0.85rem;
+}
+</style>
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  
+  ga('create', 'UA-81134010-2', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+<script>
+$(function () {
+  
+  $('[data-toggle="tooltip"]').tooltip();
+
+  
+  $(window).scroll(() => {
+    if ($(this).scrollTop() > 50 && $("#sidebar-trigger").css("display") === "none") {
+      $("#back-to-top").fadeIn();
+    } else {
+      $("#back-to-top").fadeOut();
+    }
+  });
+  $("#back-to-top").click(() => {
+    $("body,html").animate({ scrollTop: 0 }, 800);
+    return false;
+  });
+
+  
+  const input = $("#search-input");
+  const btnClear = $("#search-cleaner");
+  const searchWrapper = $("#search-wrapper");
+  if (input.val() !== "") {
+    if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+  }
+  input.on("keyup", function (e) {
+    if (input.val() !== "") {
+      if (!btnClear.hasClass("visible")) { btnClear.addClass("visible"); }
+    }
+  });
+  btnClear.on("click", function () {
+    input.val("");
+    input.focus(); searchWrapper.addClass("input-focus");
+    btnClear.removeClass("visible");
+  });
+
+  
+  const sidebarUtil = (function () {
+    const ATTR_DISPLAY = "sidebar-display";
+    let isExpanded = false;
+    const body = $("body");
+    return {
+      toggle() {
+        if (isExpanded === false) {
+          body.attr(ATTR_DISPLAY, "");
+        } else {
+          body.removeAttr(ATTR_DISPLAY);
+        }
+        isExpanded = !isExpanded;
+      }
+    };
+  }());
+  $("#sidebar-trigger").click(sidebarUtil.toggle);
+  $("#mask").click(sidebarUtil.toggle);
+});
+</script>
+
+</head>
+<body>
+  
+
+
+<div id="sidebar" class="d-flex flex-column align-items-end">
+  
+  <div class="profile-wrapper text-center">
+    
+    <div id="avatar">
+      <a href="/" alt="avatar" class="mx-auto">
+      <img src="/theme/images/avatar.jpg" alt="avatar" onerror="this.style.display='none'">
+      </a>
+    </div>
+    
+    <div class="site-title mt-3">
+      <a href="/">不见春山</a>
+    </div>
+    <div class="site-subtitle font-italic">骑马倚斜桥，满楼红袖招。</div>
+
+  </div>
+
+  <ul class="w-100">
+
+    
+    <li class="nav-item">
+      <a href="/" class="nav-link">
+        <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Home</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/cates" class="nav-link">
+        <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Categories</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/archives" class="nav-link">
+          <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i>
+          <span>Archives</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/tags" class="nav-link">
+        <i class="fa-fw fas fa-tag ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>Tags</span>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="/single/About-Me" class="nav-link">
+        <i class="fa-fw fas fa-info-circle ml-xl-3 mr-xl-3 unloaded"></i>
+        <span>About</span>
+      </a>
+    </li>
+
+  </ul> 
+  
+
+  
+
+<script type="text/javascript">
+  class ModeToggle {
+    static get MODE_KEY() { return "mode"; }
+    static get DARK_MODE() { return "dark"; }
+    static get LIGHT_MODE() { return "light"; }
+
+    constructor() {
+      if (this.hasMode) {
+        if (this.isDarkMode) {
+          if (!this.isSysDarkPrefer) {
+            this.setDark();
+          }
+        } else {
+          if (this.isSysDarkPrefer) {
+            this.setLight();
+          }
+        }
+      }
+
+      let self = this;
+
+       
+      this.sysDarkPrefers.addEventListener("change", () => {
+        if (self.hasMode) {
+          if (self.isDarkMode) {
+            if (!self.isSysDarkPrefer) {
+              self.setDark();
+            }
+
+          } else {
+            if (self.isSysDarkPrefer) {
+              self.setLight();
+            }
+          }
+
+          self.clearMode();
+        }
+
+        self.updateMermaid();
+      });
+
+    }  
+
+    get sysDarkPrefers() { return window.matchMedia("(prefers-color-scheme: dark)"); }
+
+    get isSysDarkPrefer() { return this.sysDarkPrefers.matches; }
+
+    get isDarkMode() { return this.mode === ModeToggle.DARK_MODE; }
+
+    get isLightMode() { return this.mode === ModeToggle.LIGHT_MODE; }
+
+    get hasMode() { return this.mode != null; }
+
+    get mode() { return sessionStorage.getItem(ModeToggle.MODE_KEY); }
+
+     
+    get modeStatus() {
+      if (this.isDarkMode
+        || (!this.hasMode && this.isSysDarkPrefer)) {
+        return ModeToggle.DARK_MODE;
+      } else {
+        return ModeToggle.LIGHT_MODE;
+      }
+    }
+
+    setDark() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.DARK_MODE);
+    }
+
+    setLight() {
+      $('html').attr(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+      sessionStorage.setItem(ModeToggle.MODE_KEY, ModeToggle.LIGHT_MODE);
+    }
+
+    clearMode() {
+      $('html').removeAttr(ModeToggle.MODE_KEY);
+      sessionStorage.removeItem(ModeToggle.MODE_KEY);
+    }
+
+    updateMermaid() {
+      if (typeof mermaid !== "undefined") {
+        let expectedTheme = (this.modeStatus === ModeToggle.DARK_MODE ? "dark" : "default");
+        let config = { theme: expectedTheme };
+
+         
+        
+        
+        
+        
+        
+        
+        $(".mermaid").each(function() {
+          
+          let svgCode = "";
+          $(this).prev().children(1).children("ol").children("li").each(function () {
+            svgCode = svgCode + $(this).text() + "\n";
+          });
+          $(this).removeAttr("data-processed");
+          $(this).html(svgCode);
+        });
+        mermaid.initialize(config);
+        mermaid.init({noteMargin: 10}, ".mermaid");
+      }
+    }
+
+  }  
+
+  const toggle = new ModeToggle();
+
+  function flipMode() {
+    if (toggle.hasMode) {
+      if (toggle.isSysDarkPrefer) {
+        if (toggle.isLightMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setLight();
+        }
+
+      } else {
+        if (toggle.isDarkMode) {
+          toggle.clearMode();
+        } else {
+          toggle.setDark();
+        }
+      }
+
+    } else {
+      if (toggle.isSysDarkPrefer) {
+        toggle.setLight();
+      } else {
+        toggle.setDark();
+      }
+    }
+
+    toggle.updateMermaid();
+
+  }  
+
+</script>
+  <div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center align-items-center">
+      <a id="mode-toggle-wrapper" tabindex="0" onclick="flipMode()">
+        <i class="mode-toggle fas fa-adjust"></i>
+      </a>
+      <span class="icon-border"></span>
+      
+        
+          <a href="https://github.com/ctaoist" aria-label="github">
+            <i class="fab fa-github"></i>
+          </a>
+        
+          <a href="https://twitter.com/a275761919" aria-label="twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
+         
+       
+      <a href="/rss.xml" aria-label="rss"><i class="fas fa-rss"></i></a>
+
+  </div> 
+</div>
+
+
+<div id="topbar-wrapper" class="row justify-content-center topbar-down">
+  <div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between">
+    <span id="breadcrumb">
+      
+          <span><a href="/">Home</a></span>
+          
+    </span>
+
+    <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i>
+
+    <div id="topbar-title">
+      
+    </div>
+
+    <i id="search-trigger" class="fas fa-search fa-fw"></i>
+    <form id="search-wrapper" class="align-items-center" onsubmit="search(event);return false;">
+      <i class="fas fa-search fa-fw"></i>
+      <input class="form-control" id="search-input" type="search" value=""
+        aria-label="search" autocomplete="off" placeholder="Search...">
+      <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i>
+    </form>
+    <span id="search-cancel" >取消</span>
+  </div>
+</div> 
+
+<div id="main-wrapper">
+	<div id="main" class="d-flex justify-content-center">
+		<div class="row">
+			<div class="col-12 col-sm-11 post-content">
+				<div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3">
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Leanote-%E6%94%B9%E9%80%A0%E7%AC%94%E8%AE%B0">Leanote 改造笔记</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							背景
+通过 Leanote 写笔记，经过整理后可以直接发布 Blog 的这种模式比较戳我了。 
+不过一直有点忍受不了 Leanote 的分类逻辑和 Hexo ，Hugo ，Jekyll 等静态博客不太一样，用着主题市场中半成品的主题，就这样凑合着过了两年。 
+但直到看到了一款 Jekyll 的主题 Chirpy，可以说是一间钟情了，果断移植到 Leanote 上。 
+在移植过程中越来越忍受不了 Leanote 奇怪的分类逻辑，移植的不够完美，越想越气，忍无可忍，又想到 Leanote 官方从 2018 年就基本上停止更新了，然后就 fork 了源码修改了对应部分的逻辑。 
+
+移植后的主题：le
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Visual-Studio-%E6%90%AD%E5%BB%BA%E9%A9%B1%E5%8A%A8%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83">Visual Studio 搭建驱动开发环境</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							Windows 的驱动开发环境需要安装 WDK，需要安装的 WDK 版本和 SDK 以及 Visual Studio 的版本均相关，版本号和 build 号都要能对上，搭建起来体验是极其差。 
+比较方便的方法，还是使用 winget 安装。 
+查询 SDK 版本： 
+  
+winget search --source winget --id Microsoft.WindowsSDK
+Copy     
+名称                                                       ID                              版本------
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B">本地部署大语言模型</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" class="post-tag no-text-decoration text-muted">机器学习</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							现在才玩大语言模型虽然有点迟了，但在本地部署的方案也比较成熟，不会遇到什么坑。 
+  
+下载模型
+开源的大模型有很多，哪个模型中文更好也没有经验，先选择中文羊驼大模型三期项目试试效果。 
+按照该项目作者的推荐下载 ggml-model-q8_0.gguf。 
+也可以通过 ollama 下载，省去后续的转换过程（转换过程很慢）： 
+  
+ollama run wangshenzhi/llama3-8b-chinese-chat-ollama-q8
+Copy   
+ollama 大语言模型镜像地址：https://ollama.com/wangshenzhi/llama3-8b-chinese-c
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/LVM-%E7%AE%A1%E7%90%86">LVM 管理</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							逻辑卷是使用逻辑卷组管理(Logic Volume Manager)创建出来的设备，如果要了解逻辑卷，那么首先需要了解逻辑卷管理中的一些概念。 
+
+物理卷（Physical Volume,PV）：也就是物理磁盘分区，如果想要使用LVM来管理这个分区，可以使用fdisk将其ID改为LVM可以识别的值，即8e。
+卷组（Volume Group,VG）：PV的集合
+逻辑卷（Logic Volume,LV）：VG中画出来的一块逻辑磁盘
+
+具体架构如下： 
+ 
+  
+物理卷
+  
+# pvcreate 用于创建物理卷，可以使用磁盘，也可以使用磁盘分区创建物理卷pvcreate /dev/sdb[1]# 
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E4%BD%BF%E7%94%A8usbip%E7%BD%91%E7%BB%9C%E8%BD%AC%E5%8F%91usb%E8%AE%BE%E5%A4%87%E5%88%B0%E8%BF%9C%E7%A8%8B%E4%B8%BB%E6%9C%BA">使用usbip网络转发usb设备到远程主机</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							有时候需要远程调试 USB 设备，使用 usbip 就很方便。 
+  
+安装
+  
+apt install usbip# 安装完后导入内核模块modprobe usbip_coremodprobe usbip_hostCopy     
+服务端
+  
+usbipd -D # 后台运行usbip list -l # 查看当前可用usb设备usbip bind --busid=ID # 绑定 usb 设备Copy   如： 
+  
+usbip list -l- busid 1-1.1 (0424:ec00)   Microchip Technology, Inc. (formerly SMSC) 
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/HK1-RBOX-X4-%E7%94%B5%E8%A7%86%E7%9B%92%E5%AD%90%E6%8A%98%E8%85%BE%E7%AC%94%E8%AE%B0">HK1 RBOX X4 电视盒子折腾笔记</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							新入手了一个 HK1 RBOX X4，不折腾一下怎么睡得着觉。 
+  
+SlimBox
+一共有 3 种方法： 
+
+卡刷：使用 Burn_Card_Maker 把 slimbox 镜像写入一张 tf 卡中，断电后用棉签之类短按住 av 孔里的 reset 键不放，然后通电，会自动进行升级。
+线刷：
+
+安装官方烧写工具 Amlogic USB Burning Tool 3.2 版本（简称 UBT），加载镜像，点击开始
+使用双公头的 USB 线，一端插入电脑，然后同样按住 reset 键不放
+把 USB 短另一头插入 RBOX 的 USB2.0 接口中
+直到烧写完成，点击停止后再拔出
+
+
+强制烧写：
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Altera%E7%83%A7%E5%86%99%E5%8F%8C%E9%95%9C%E5%83%8F">Altera 烧写双镜像</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							简介
+双镜像原理： 
+ 
+各种配置下 Flash 分布： 
+ 
+  
+双镜像
+首先需要创建一个 dual boot ip 核： 
+ 
+在顶层文件里例化： 
+  
+reg clk_2 = 1'b0;always @(posedge FPGA_CLK100M_P)  clk_2 &lt;= ~clk_2;dual_boot dualboot_u(    .clk_clk(clk_2),       //   clk.clk    .reset_reset_n(1'b0)  // reset.reset_n);Copy   原来的时钟太快，在这里做了个 2 分频。 
+接着创建一个 revision：
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E8%81%9A%E7%B1%BB">聚类</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" class="post-tag no-text-decoration text-muted">机器学习</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							k-means
+
+选择初始化的 K 个样本作为初始聚类中心 c=c1,c2,...,ckc = c_1, c_2,...,c_kc=c1​,c2​,...,ck​；
+针对数据集中每个样本 xix_ixi​ 计算它到 k 个聚类中心的距离并将其分到距离最小的聚类中心所对应的类中；
+针对每个类别 cjc_jcj​，重新计算它的聚类中心（即属于该类的所有样本的质心）；
+重复上面 2 3 两步操作，直到达到某个中止条件（迭代次数、最小误差变化等）。
+
+目标函数为： 
+  
+J(C)=∑kK∑idik2J(C) = \sum_k^K\sum_i d_{ik}^2
+J(C)=k∑K​i∑​dik2​ 
+常
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E7%BE%A4%E6%99%96%E5%8D%87%E7%BA%A7ARPL%E7%AC%94%E8%AE%B0">群晖升级 ARPL 笔记</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							版本变迁
+原版 arpl 是巴西人写的，好像停更了，然后 arpl-i18n 继续维护，后来由于某种原因这个也听更了，目前最新的引导是 rr。 
+并且 rr 从 24.3.0 开始要求引导磁盘大小是4G，所以如果引导磁盘大小不够的话还需要扩容。 
+按照 RR 官方给的升级教程，尝试了很多次都失败。我群晖运行在 pve 上，尝试升级的成本比较低。我最开始的版本是 arpl-1.1beta，按照教程先升级到 arpl-i18n-23.10.4，这一步没有问题，然后再升级到 rr-24.x.x，这一步始终失败。 
+好像是 RR 改了架构，支持热更新，改动比较大，所以升级就比较麻烦。甚至把升级文件 u
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/ROS%E4%BF%AE%E6%94%B9MTU%E5%92%8CMSS%E8%A7%A3%E5%86%B3%E4%B8%8A%E7%BD%91%E6%85%A2%E5%92%8C%E9%A1%B5%E9%9D%A2%E6%98%BE%E7%A4%BA%E4%B8%8D%E5%85%A8%E9%97%AE%E9%A2%98">ROS修改 MTU 和 MSS 解决上网慢和页面显示不全问题</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/ROS" class="post-tag no-text-decoration text-muted">ROS</a>
+								
+									<a href="/tag/Router" class="post-tag no-text-decoration text-muted">Router</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							有时候国内的一些平台的一些资源加载不出来，ipv4 有些网站慢，ipv6 就是卡顿、资源完全加载不出来，比如起点小说网的图片，微信的图片，抖音一些的相关资源等。 
+为此我还搭建了 mosdsn 服务，配置某些网站在查询域名的时候只返回 ipv4 的地址，后来发现没有这个必要。 
+故障原因是 MSS 设置不正确，而服务器有设置不允许分片，所以导致部分数据包被丢包，最终导致结果如上。由于MSS 属于 Option，非强制要求。。 
+首先 Ros 的 Actual MTU 值或者 Max MTU 值改成和原有光猫的 MTU 值。如果 pppoe 已经拨通的情况下就以 Actual MTU 为准。 
+
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/EPUB%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3">EPUB 格式详解</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							epub3 标准则是基于 html5、css3、svg 等 web 标准以及 mathML 等来展示内容，以 .epub 结尾的 zip 压缩文件。 
+ 
+epub3 规范使用 OCF (open container format) 标准规定的文件结构，根目录当中__必须__有一个 mimetype 文件和一个 META-INF 文件夹。其中，mimetype 文件中只有一个行内容 application/epub+zip，而 META-INF 中存放的则是表述整个文档的元数据。 
+在 META-INF 文件夹内必须有一个 container.xml 文件（除该文件以后，标准还定义了一些可选文
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Quartus-ii-%E8%B0%83%E7%94%A8-Modelsim">Quartus ii 调用 Modelsim</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							配置 Modelsim
+
+设置仿真工具
+
+assignments -&gt; setting -&gt; EDA tool setting -&gt; simulation 选择需要的工具。 
+ 
+
+自动产生测试激励文件模板
+
+processing -&gt; start -&gt; Start test bench template writer: 
+ 
+文件夹 simulation - modelsim 中产生一个测试激励文件 xxx.vt(Verilog test bench) 或者 xxx.vht(VHDL test bench) 
+
+连接 test bench
+
+还是在 simula
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/vscode-verilog-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE">vscode &#43; verilog 环境配置</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							vscode 需要安装的插件： 
+
+Verilog-HDL/SystemVerilog/Bluespec SystemVerilog: 语法高亮，自动补全，代码跳转，代码静态检查等
+verilog-formatter: 自动格式化
+
+需要安装的命令行程序： 
+
+iverilog: 代码编译、静态检查等，也可以使用 modelsim, xvlog, verilator 等
+ctags: 补全，大纲，跳转
+iStyle Verilog Formatter: 代码格式化。这个需要手动编译，可以使用 g++ 或者 Visual Stuido 编译，附上一个 vs2022 编译好的 iStyle，如果提
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Python%E7%9A%84%E8%B7%A8%E7%9B%AE%E5%BD%95%E5%BC%95%E7%94%A8">Python的跨目录引用</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							经常遇到 Python 跨目录引用报 No module named xxxx 错误，略微整理一下。 
+  
+区分Python中的一些概念
+
+一个以 .py 结尾的文件就是一个 python module
+任意一个文件夹，只要其中包含 python module，就可以叫做 python package.（Python2的话，该文件夹内还需要包含一个 __init__.py 文件）
+
+我们既可以 import package，也可以 import module，以及 module 下的函数、类等等 
+  
+Python引用自定义python文件的情况
+  
+utils和main位于同级目录下
+
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E5%8E%9F%E7%90%86%E7%9A%84%E7%90%86%E8%A7%A3">反向传播原理的理解</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							如图所示，计算图的反向传播从右到左传播信号。反向传播的计算顺序是，先将节点的输入信号乘以节点的局部导数（偏导数），然后再传递给下一个节点。 
+首先来考虑加法节点的反向传播。这里以 z=x+yz = x + yz=x+y 为对象， 观察它的反向传播。z=x+yz = x + yz=x+y 的导数可由下式（解析性地）计算出来： 
+  
+∂z∂x=1∂z∂y=1\frac{\partial z}{\partial x} = 1 \\
+\frac{\partial z}{\partial y} = 1
+∂x∂z​=1∂y∂z​=1 
+也就是说，加法节点的反向传播只乘以 1。输入的值会原封不动地流向下一
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E8%BF%81%E7%A7%BB%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8">迁移学习入门</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e6%9c%ba%e5%99%a8%e5%ad%a6%e4%b9%a0" class="post-tag no-text-decoration text-muted">机器学习</a>
+								
+									<a href="/tag/Tensorflow" class="post-tag no-text-decoration text-muted">Tensorflow</a>
+								
+									<a href="/tag/Keras" class="post-tag no-text-decoration text-muted">Keras</a>
+								
+									<a href="/tag/%e8%bf%81%e7%a7%bb%e5%ad%a6%e4%b9%a0" class="post-tag no-text-decoration text-muted">迁移学习</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							简介
+迁移学习(transfer learning)通俗来讲，就是运用已有的知识来学习新的知识，核心是找到已有知识和新知识之间的相似性，用成语来说就是举一反三。由于直接对目标域从头开始学习成本太高，我们故而转向运用已有的相关知识来辅助尽快地学习新知识。比如，已经会下中国象棋，就可以类比着来学习国际象棋；已经会编写Java程序，就可以类比着来学习C#；已经学会英语，就可以类比着来学习法语；等等。世间万事万物皆有共性，如何合理地找寻它们之间的相似性，进而利用这个桥梁来帮助学习新知识，是迁移学习的核心问题。 
+在迁移学习中，我们已有的知识叫做源域(source domain)，要学习的新知识叫目标域
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/N2N-%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B">N2N 搭建教程</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/VPN" class="post-tag no-text-decoration text-muted">VPN</a>
+								
+									<a href="/tag/%e8%99%9a%e6%8b%9f%e7%bb%84%e7%bd%91" class="post-tag no-text-decoration text-muted">虚拟组网</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							之前从 Zerotier 切换到 Tinc，但是在 ArchLinux 和创建的 Alpine 镜像中，连接成功一段时间后老是提示 Metadata socket read error for xxxxx: Connection reset by peer，搜了一圈也没有找到解决办法，干脆切换到 N2N 算了。 
+N2N是一款十分简单且强大的p2p组网软件。它可以实现组网和p2p直连。只需要拥有一台服务端，任何主机都可以接入进来做为客户端，功能更贴近 Zerotier。 
+ 
+  
+安装
+  
+supernode 服务端
+由于 VPS 的 Debian 软件仓库里的版本非常低，做了一个Dock
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/WireGuard-%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B">WireGuard 搭建组网教程</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							IOS 只支持一个 vpn 连接，如果想科学上网和连上家里的局域网，就需要频繁切换 vpn。之前使用了 tailscale 组网，choc 支持 tailscale，但作者疑似跑路。 
+Stash 和 Surge 支持 wireguard 协议，这样出国和回家就能在同一个 vpn 中实现，不同来回切换，索性再用 wireguard 再组一个虚拟网络。 
+
+shadowrocket 也支持 wireguard，但我尝试了一下，和服务端握手后仍然 ping 不通。 
+
+网络拓扑图如下： 
+ 
+用一个有公网服务器做 WireGuard 服务端，OpenWrt 和 IOS 做客户端。WireGuard
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Leanote%E6%94%AF%E6%8C%81Mermaid-Chartjs%E5%8F%8A%E4%BF%AE%E5%A4%8DBug">Leanote 支持 Mermaid，Chartjs 及修复 Bug</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/BLog" class="post-tag no-text-decoration text-muted">BLog</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							支持 emoji、chart.js 以及 mermaid
+
+参考的大佬地址：https://github.com/jim3ma/leanote 
+
+
+下载 note.html 替换 leanote/app/views/note/note.html
+下载 note-dev.html 替换 leanote/app/views/note/note-dev.html
+下载 md2html.js 替换 leanote/public/libs/md2html/md2html.js
+下载 main-v2.js 替换 leanote/public/md/main-v2.js
+下载 default.css 替换
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Mathematica%E6%A8%A1%E6%8B%9F%E6%BB%91%E5%9D%97%E6%91%86%E8%BF%90%E5%8A%A8">Mathematica 模拟滑块摆运动</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Math" class="post-tag no-text-decoration text-muted">Math</a>
+								
+									<a href="/tag/Mathematica" class="post-tag no-text-decoration text-muted">Mathematica</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							写这个主要是为了Mathematica的动画制作，Mathematica官方文档给出的是用Animate及相关的函数，但这并不能满足题目的要求，所以选择创建GIF图片。 
+
+  
+
+题目
+
+滑块摆由一置于光滑杆上的质量为m的滑块A、一质量为M的小球B和长度为L，质量不计的刚性杆铰接而成，不计各处摩擦，以过A点的水平面为零势能面，通过Lagrange方程建立系统的运动方程，利用Maple软件画出： 
+1. 滑块A的位移x随时间t的变化曲线 
+2. 角度φ随时间t的变化曲线 
+3. 滑块摆的运动动画 
+
+ 
+
+  
+
+拉格朗日力学分析
+
+在力学中经常使用 Lagrange 方程来分析。 
+在滑块摆
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/MiniDlna%E6%B7%BB%E5%8A%A0%E5%AF%B9rmvb%E7%9A%84%E6%94%AF%E6%8C%81">MiniDlna 添加对 rmvb 的支持</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							MiniDLNA(官网)----DLNA服务端，不支持rm、rmvb格式的文件分享，但可以自己修改源文件来支持，所以就选它了。它还自带一个Web网页，可以显示分享资源数与当前客户端名字等等，在浏览器里打开http://本机IP:8200 
+  
+下载源代码
+目前minidlna最新版本1.1.5， 下载地址sourceforge.net 
+  
+修改源文件
+附上已经修改好的源码一份。 
+metadata.c 
+//line 840  else if( strncmp(ctx-&gt;iformatctx-&gt;name, "matroska", 8) == 0 )      xasprint
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Tinc%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B">Tinc 搭建教程</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/VPN" class="post-tag no-text-decoration text-muted">VPN</a>
+								
+									<a href="/tag/%e8%99%9a%e6%8b%9f%e7%bb%84%e7%bd%91" class="post-tag no-text-decoration text-muted">虚拟组网</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							简介
+最近从 Zerotier 切换到 Tinc，是由于公司网络的 NAT 层数太多，是 Symmetric NAT，Zerotier p2p 打洞几乎不成功，连接国内自建的 Moon 都费劲。切换到 Tinc 后目前体验良好。 
+附一个NAT类型测试工具：NAT类型测试.zip 
+Tinc 是一个组建虚拟专用网络（VPN）的工具，以 GNU 协议发布，通过隧道及加密技术在互联网上点与点之间创建专有网络。tinc 在网络层工作，因此无需对现有软件进行修改和配置。您可以使用 tinc 搭建专属的低延迟、高带宽、可扩展的 P2P VPN。其数据通讯经过加密和压缩，能避免敏感数据和隐私的泄露。 
+无
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Tensorflow%E8%B0%83%E7%94%A8Matlab%E7%94%9F%E6%88%90%E7%9A%84.mat%E6%96%87%E4%BB%B6">Tensorflow 调用 Matlab 生成的 .mat 文件</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							matlab 处理好的数据想送进 Tensorflow 的神经网络中，在数据量极大的时候，全部读进内存也不是太理想，综合 tfrecord，自己构建 tfds 数据集等方式，还是生成 tf.data.Dataset 会更便捷一些。 
+在数据量极大的时候，期望的是 Tensorflow在使用数据的时候才读取相应的数据，则要求Matlab保存数据的时候不能将所有数据保存到一个大的 .mat 文件，而是应该分开保存： 
+  
+path_to_data    └───────0.mat            1.mat            2.mat            ...Copy   如果保
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E6%AE%8B%E5%B7%AE%E7%BD%91%E7%BB%9CResNet">残差网络(ResNet)</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							简介
+ResNets要解决的是深度神经网络的“退化”问题。 
+什么是“退化”？ 
+我们知道，对浅层网络逐渐叠加layers，模型在训练集和测试集上的性能会变好，因为模型复杂度更高了，表达能力更强了，可以对潜在的映射关系拟合得更好。而“退化”指的是，给网络叠加更多的层后，性能却快速下降的情况。 
+如果期望的潜在映射为H(x)H(x)H(x)，与其让F(x)F(x)F(x)直接学习潜在的映射，不如去学习残差H(x)−xH(x)−xH(x)−x，即F(x):=H(x)−xF(x):=H(x)−xF(x):=H(x)−x，这样原本的前向路径上就变成了F(x)+xF(x)+xF(x)+x，用F(x)+x
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/RNN%E4%B8%8ELSTM">RNN与LSTM</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+						</div>
+						</div>
+						<p>
+							RNN
+一个简单的RNN模型如下： 
+ 
+循环神经网络的隐藏层的值 SSS 不仅仅取决于当前这次的输入 XXX，还取决于上一次隐藏层的值 St−1S_{t-1}St−1​。权重矩阵 W WW 就是隐藏层上一次的值作为这一次的输入的权重。 
+RNN 按照时间线展开： 
+ 
+网络在 ttt 时刻接收到输入 X_{t} 之后，隐藏层的值是 StS_tSt​ ，输出值是 OtO_tOt​ 。关键一点是， OtO_tOt​  的值不仅仅取决于 XtX_{t}Xt​ ，还取决于 St−1S_{t-1}St−1​ 。 
+  
+LSTM
+LSTM 的梯度由两部分组成：RNN 结构的梯度和线性变换函数的梯度。线
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/tensorflow-gpu%E5%AE%89%E8%A3%85%E7%AC%94%E8%AE%B0">tensorflow-gpu 安装笔记</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Tensorflow" class="post-tag no-text-decoration text-muted">Tensorflow</a>
+								
+									<a href="/tag/WIn10" class="post-tag no-text-decoration text-muted">WIn10</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							公司另一个项目组整了台 GPU 服务器，可以蹭一蹭，tensorflow-gpu 环境的搭建还是有点麻烦，使用 conda 会省时省力一些。 
+  
+安装 cuda 和 cudnn
+  
+手动安装
+官方下载地址 
+  
+conada 安装
+换源请参考 conda 换源 
+初次使用 conda 需要初始化 shell： 
+  
+conda init powershell # win10 初始化 powershell, linux 则 bash/zsh 等
+Copy   
+ps. powershell 需要开启执行脚本的权限, 打开PowerShell 然后输入 get-executionpoli
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E7%90%86%E8%A7%A3-typedef-%E5%AE%9A%E4%B9%89%E7%9A%84%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88">理解 typedef 定义的函数指针</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/C&#43;&#43;" class="post-tag no-text-decoration text-muted">C&#43;&#43;</a>
+								
+									<a href="/tag/C" class="post-tag no-text-decoration text-muted">C</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							在 C 里面，可以用 typedef 来为一个已有的数据类型增加一个新的别名。比如： 
+typedef int Length;
+Copy   这种简单的形式，大家都能理解。可是遇到下面这种形式，不少人就傻眼了。比如： 
+typedef int (*PFI)(int, const char *);
+Copy   难道是把 int 数据类型定义成了 (*PFI)(int, const char *) 的数据类型，可是哪有这样的数据类型啊。即使被别人告知这是定义了一种函数指针类型，但却怎么也无法和 typedef int Length 这种形式关联起来，不是应该有一种已有的数据类型，一种新的数据类型
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E5%BA%94%E5%AF%B9PPPOE%E6%8B%A8%E5%8F%B7%E7%94%A8%E6%88%B724-48%E5%B0%8F%E6%97%B6%E6%96%AD%E7%BA%BF%E4%B8%80%E6%AC%A1">应对PPPOE拨号用户24/48小时断线一次</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Router" class="post-tag no-text-decoration text-muted">Router</a>
+								
+									<a href="/tag/ROS" class="post-tag no-text-decoration text-muted">ROS</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							家里有一台做路由的虚拟服务器，拉的是联通的100M光纤，有时候玩游戏的时候突然掉线，经过查看路由（MikroTik RouterOS 6.38.5）日志发现每天差不多15:25分左右都有如下日志： 
+
+  
+
+15:26:16 pppoe,ppp,info pppoe-out1: terminating...15:26:16 pppoe,ppp,info pppoe-out1: disconnected15:26:16 pppoe,ppp,info pppoe-out1: initializing...15:26:16 pppoe,ppp,info pppoe-out1: waiting fo
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/I2C-%E5%86%85%E9%83%A8%E9%9B%86%E6%88%90%E7%94%B5%E8%B7%AF%E6%80%BB%E7%BA%BF%E6%8E%A5%E5%8F%A3">I2C 内部集成电路总线接口</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/I2C" class="post-tag no-text-decoration text-muted">I2C</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							简介
+
+为两线串行接口，一条数据线 SDA，一条时钟线 SCL，可用于 MCU 和外部 I2C 设备的通讯。有标速(100kHz)、快速(400kHz)、快速+(1MHz)模式和Ultra Fast-mode(5MHz)， 支持SMBus（系统管理总线）、 PMBus（电源管理总线）和SAM_V（验证安全控制模式），7 位和 10 位的地址模式和广播寻址。 
+
+  
+
+信号定义
+
+时钟信号的高电平期间 SDA 线上的数据必须稳定。只有在时钟信号 SCL 变低的时候数据线 SDA 的电平状态才能跳变 
+
+所有的数据传输起始于一个 START(S)结束于一个 STOP(P) 
+START 起始位定
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E6%B5%85%E8%B0%88Pandoc%E5%B0%86Markdown%E8%BD%AC%E6%88%90PDF">浅谈 Pandoc 将 Markdown 转成 PDF</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/pandoc" class="post-tag no-text-decoration text-muted">pandoc</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							使用 Pandoc 将 Markdown 转化成 PDF 常见的流程是利用 xelatex 直接生成 PDF。这要求安装 Latex 的大部分功能以及各种宏包，也不能像 Latex 那样自由的控制格式，生成的速度也很慢。更关键的是容易出现各种莫名奇妙的问题。 
+
+于是就想了个另外生成 PDF 的办法，即利用 Pandoc 先将 Markdown 转成 Html，再利用浏览器的打印功能打印出 PDF，虽然多了一个步骤，但会少很多问题，不用那么折腾，正所谓遥程路反近，捷径常误人。 
+
+  
+
+利用 xelatex 直接生成 PDF
+
+如果使用 Pandoc 直接生成 PDF，则需要安装 latex
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E4%B8%8D%E6%8B%86%E6%9C%BA%E7%9B%B4%E6%8E%A5%E4%BF%AE%E6%94%B9%E9%BB%91%E7%BE%A4%E6%99%96%E7%9A%84SN%E5%92%8CMAC">不拆机直接修改黑群晖的SN和MAC</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Nas" class="post-tag no-text-decoration text-muted">Nas</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							U盘引导修改方法
+
+一、开启SSH端口。 
+
+在控制面板里面——&gt;终端机和SNMP ，启动SSH功能打勾，并设置端口（建议别用22，改用其他的，比如220或者其他都行）。 
+
+二、挂载 synoboot1 分区。 
+
+第一步：用 ssh 工具如 xshell 连接到群晖的地址，用创建群晖的管理用户登陆。 
+
+第二步：获取root权限。（如果这一步失败，请按照教程开启root权限，6.17及以下版本看这里，6.2及以上版本看这里。） 
+
+  
+
+sudo -i
+
+回车后会提示输入密码，即再次输入当前管理账号的密码。 
+
+成功后会变成 root@Sxxx:~#。 
+
+第三步：将 /dev/s
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/DNSmasq%E9%85%8D%E7%BD%AE">DNSmasq 配置</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Linux" class="post-tag no-text-decoration text-muted">Linux</a>
+								
+									<a href="/tag/DNS" class="post-tag no-text-decoration text-muted">DNS</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							Dnsmasq 首先会查找 /etc/hosts 文件，如果没有查找到，会查询本地 DNS 缓存记录，如果还是未找到对应的记录，则会将请求装发到 /etc/resolv.conf 文件中定义的上游 DNS 服务器中，从而实现对域名的解析。 
+
+默认情况下，Dnsmasq 会从 /etc/dnsmasq.conf 读取配置项，我们也可以使用 -C 的启动参数来指定配置文件。下面介绍一下常用的 DNS 和 DHCP 服务的配置参数。   
+
+通用配置项
+
+  
+
+# 服务运行的网卡，如果有多个话，可在再次添加一条记录interface=eth1interface=wlan0# 指定服务不在以下网卡
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/IAR%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD">IAR 分散加载</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e5%b5%8c%e5%85%a5%e5%bc%8f" class="post-tag no-text-decoration text-muted">嵌入式</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							IAR 中的分散加载为 .icf 文件，在工程目录的 config 文件夹下。 
+
+  
+
+/*###ICF### Section handled by ICF editor, don't touch! ****//*-Editor annotation file-*//* IcfEditorFile="$TOOLKIT_DIR$\config\ide\IcfEditor\cortex_v1_0.xml" *//*-Specials-*/define symbol __ICFEDIT_intvec_start__ = 0x08000000;/*-Memory Regions-*/define 
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/MDK-Keil%E5%88%86%E6%95%A3%E5%8A%A0%E8%BD%BD">MDK(Keil) 分散加载</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e5%88%86%e6%95%a3%e5%8a%a0%e8%bd%bd" class="post-tag no-text-decoration text-muted">分散加载</a>
+								
+									<a href="/tag/ARM" class="post-tag no-text-decoration text-muted">ARM</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							官网资料 
+
+分散加载文件是 sct 格式文件。 
+
+格式： 
+1. 每个加载域的加载地址和最大尺寸 
+2. 每个加载域的属性 
+3. 从每个加载域派生的执行域 
+4. 每个执行域的执行地址和最大尺寸 
+5. 每个执行域的输入节 
+
+特点： 
+1. 编译后输出的映像文件中各断是首位相连，中间没有空闲的区域。 
+2. scatter file 用于将编译后的映像文件中的特定段加载到多个分散的指定内存区域 
+3. 有两类域：执行域，加载域，从哪里取址，哪里就是执行域 
+4. 加载域：就是编译之后得到的二进制文件烧写到rom中的这一段区域，所有的代码r0,预定义变量rw,堆栈之类和清不清空无关紧要的
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/Linux%E5%88%9B%E5%BB%BASwap%E5%88%86%E5%8C%BA">Linux 创建 Swap 分区</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Linux" class="post-tag no-text-decoration text-muted">Linux</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							a.创建交换文件   
+
+fallocate -l 4G /swapfile# ordd if=/dev/zero of=/swapfile bs=1M count=4096
+
+b.设置可访问权限  
+
+  
+
+chmod 600 /swapfile
+
+c.格式化文件 
+
+  
+
+mkswap /swapfile
+
+d.激活swap空间 
+
+  
+
+swapon /swapfile
+
+f.开机自动启用swap空间 
+
+编辑/etc/fstab，添加下面这一句：   
+
+/swapfile none swap default 0 0
+
+或者在 /etc/rc.local 中添加： 
+
+  
+
+s
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/zerotier%E4%B9%8Bmoon%E6%90%AD%E5%BB%BA">Zerotier 之 Moon搭建</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/zerotier" class="post-tag no-text-decoration text-muted">zerotier</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							Moon 服务器
+  
+生成及修改json
+  
+cd /var/lib/zerotier-onezerotier-idtool initmoon identity.public &gt;&gt;moon.jsonCopy   经过此步，生成moon.json文件。vi编辑moon.json，修改 “stableEndpoints” 为机器 A 的公网的ip，以ipv4为例： 
+  
+"stableEndpoints": [ "1.2.3.4/9993","2408::1/9993"]
+Copy   另外，记录下json中的id值。 
+  
+生成签名文件
+  
+zerotier-idtool 
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E5%BF%AB%E9%80%9F%E5%88%A4%E6%96%AD%E5%87%BA%E4%B8%80%E4%B8%AA%E6%97%A5%E5%89%A7%E5%80%BC%E4%B8%8D%E5%80%BC%E5%BE%97%E8%BF%BD">快速判断出一个日剧值不值得追</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/%e7%94%9f%e6%b4%bb" class="post-tag no-text-decoration text-muted">生活</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							怎样快速有效地分辨出值得追和果断弃的日剧？ 
+
+日本有五大电视台：日本放送协会（NHK），富士电视台（CX），东京放送电视台（TBS），日本电视台（NTV），朝日电视台（EX）。 
+
+  
+
+日本放送协会（NHK）
+
+先来说说NHK，它的性质相当于我们的央视。NHK，只有两种剧值得追 
+
+
+晨间剧，周一到周六早上8：15播出，比如《海女》
+是大河剧，周日晚间19:00播出，比如《真田丸》
+
+
+
+  大河剧是以历史人物或一个时代为主题，来反映出其所处时代的变迁的电视剧。 
+  大河剧一般都带着浓重的战争色彩。 
+  大河剧考证比较严谨，如果你不想看枯燥的史书，又想了解一下日本历史，可以看这种剧。
+						</p>
+					</div>
+					
+					<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">
+						<a href="/post/%E8%A1%8C%E8%B7%9D%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86">行距基础知识</a>
+						<div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1">
+						<div class="post-tags">
+							
+								<i class="fa fa-tags fa-fw"></i>
+								
+									<a href="/tag/Latex" class="post-tag no-text-decoration text-muted">Latex</a>
+								
+							
+						</div>
+						</div>
+						<p>
+							baseline 是什么
+TeX 中的每个字符都放在一个 box 里。每个 box 有 base （参考点）、width（宽度）、height（高度）、depth（深度），其中 height + depth = totalheigth （总高）。 
+若干字符的 box 组成一个词的 box ，同样这个 box 也有这样几个参数。TeX 断行之后，会把这一行的所有盒子的 base 连接起来，以保证改行的内容在一个基准线上，连接成的线段就是 baseline. 
+如图所示：
+ 
+  
+LaTeX 的行距机制
+每一行都有一条 baseline, 同一段落中相邻两行之间的 baseline 的间距称为
+						</p>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+	</div> 
+
+</div> 
+<div id="mask"></div>
+
+<a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<script type="module">/* leanote-pagefind */
+(function () {
+  var PF_BASE = "";
+  var box = document.getElementById("search-results");
+  if (!box) return;
+  var input = document.getElementById("search-input");
+  var original = box.innerHTML;
+  var pf = null, loadErr = false, timer = null;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function note(msg) {
+    box.innerHTML = '<p class="text-muted mt-3" style="text-align:center">' + esc(msg) + "</p>";
+  }
+  async function ensure() {
+    if (pf) return pf;
+    pf = await import(PF_BASE + "/pagefind/pagefind.js");
+    if (pf.options) { try { await pf.options({ baseUrl: PF_BASE + "/" }); } catch (e) {} }
+    return pf;
+  }
+  function render(items) {
+    if (!items.length) { note("没有找到匹配的文章"); return; }
+    box.innerHTML = items.map(function (d) {
+      var url = (d.meta && d.meta.link) || d.url || "#";
+      var title = (d.meta && d.meta.title) || "(无标题)";
+      return '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0">' +
+        '<a href="' + esc(url) + '">' + esc(title) + "</a><p>" + (d.excerpt || "") + "</p></div>";
+    }).join("");
+  }
+  async function run(q) {
+    q = (q || "").trim();
+    if (!q) { box.innerHTML = original; return; }
+    if (loadErr) { note("搜索索引未生成，请重新发布博客"); return; }
+    try {
+      var p = await ensure();
+      var s = await p.search(q);
+      var items = await Promise.all(s.results.slice(0, 30).map(function (r) { return r.data(); }));
+      render(items);
+    } catch (e) { loadErr = true; note("搜索索引未生成，请重新发布博客"); }
+  }
+  var params = new URLSearchParams(location.search);
+  var kw = params.get("keywords") || params.get("keyword") || params.get("q") || "";
+  if (input && kw && !input.value) input.value = kw;
+  if (input) {
+    input.addEventListener("input", function () {
+      clearTimeout(timer);
+      timer = setTimeout(function () { run(input.value); }, 150);
+    });
+  }
+  if (kw) run(kw);
+})();</script>
+</body>
+</html>

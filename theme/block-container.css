@@ -1,0 +1,126 @@
+pre ol li span {
+  color: #212529;
+}
+html[mode=dark] pre ol li span {
+  color: #bfbfbf;
+}
+pre.prettyprint ol.linenums li { /*行号颜色*/
+  color: var(--highlight-lineno-color);
+}
+pre.prettyprint {
+  border: none;
+}
+code {
+  background-color: var(--inline-code-bg);
+}
+html[mode=dark] code {
+  color: var(--highlighter-rouge-color);
+}
+code[class*="language-"], pre[class*="language-"] {
+    background: transparent;
+    margin: 0;
+    outline: none;
+    font-size: 0.85rem;
+    text-shadow: none;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    box-shadow: none;
+}
+.token.operator {
+  background: transparent;
+}
+
+.highlight {
+  margin-bottom: 1.2em;
+  /* Override BS Inline-code style */
+}
+
+.katex-display .tag {
+  margin-right: inherit;
+  padding: inherit;
+  line-height: inherit;
+  border: none !important;
+  box-shadow: none;
+  
+}
+
+.katex-display .tag:hover {
+  background: none;
+}
+
+.katex-display .tag span {
+  margin-left: 0;
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.mermaid {
+  max-width: 960px;
+  margin:0 auto;
+}
+
+.success,
+.info,
+.warning,
+.danger {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.success>p:last-child,
+.info>p:last-child,
+.warning>p:last-child,
+.danger>p:last-child {
+  margin-bottom: 0;
+}
+
+.success {
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+
+.info {
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.warning {
+  color: #8a6d3b;
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+}
+
+.danger {
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+
+html[mode=dark] .success {
+  filter: brightness(0.35); /*invert(0.24);*/
+}
+
+html[mode=dark] .info {
+  filter: brightness(0.35); /*invert(0.24);*/
+}
+
+html[mode=dark] .warning {
+  filter: brightness(0.35); /*invert(0.24);*/
+}
+
+html[mode=dark] .danger {
+  filter: brightness(0.35); /*invert(0.24);*/
+}
+
+html[mode=dark] #sidebar img {
+  filter: brightness(0.35);
+}
+
+html[mode=dark] canvas {
+  filter: brightness(0.35);
+}
